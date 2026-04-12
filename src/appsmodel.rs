@@ -6,7 +6,7 @@ use libflatpak::glib::GString;
 use libflatpak::prelude::{InstallationExt, InstalledRefExt, RefExt};
 use libflatpak::{Installation, RefKind};
 
-use appsmodel::TodoRoles;
+use appsmodel::AppsRoles;
 use cxx_qt_lib::QString;
 
 #[cxx_qt::bridge]
@@ -29,7 +29,8 @@ mod appsmodel {
     }
 
     #[qenum(AppsModel)]
-    enum TodoRoles {
+    enum AppsRoles {
+        Id,
         Name,
         Location,
     }
@@ -61,8 +62,14 @@ mod appsmodel {
     }
 }
 
+struct App {
+    id: String,
+    name: String,
+    location: String,
+}
+
 pub struct AppsModelRust {
-    apps: Vec<(QString, QString)>,
+    apps: Vec<App>,
 }
 
 fn g_to_q(input: &GString) -> QString {
@@ -83,7 +90,11 @@ impl Default for AppsModelRust {
                 .unwrap();
 
             for r in refs {
-                apps.push((g_to_q(&r.name().unwrap()), g_to_q(&r.deploy_dir().unwrap())));
+                apps.push(App {
+                    id: r.name().unwrap().into(),
+                    name: r.appdata_name().unwrap().into(),
+                    location: r.deploy_dir().unwrap().into(),
+                });
             }
         }
 
@@ -94,7 +105,11 @@ impl Default for AppsModelRust {
             .unwrap();
 
         for r in refs {
-            apps.push((g_to_q(&r.name().unwrap()), g_to_q(&r.deploy_dir().unwrap())));
+            apps.push(App {
+                id: r.name().unwrap().into(),
+                name: r.appdata_name().unwrap_or(r.name().unwrap()).into(),
+                location: r.deploy_dir().unwrap().into(),
+            });
         }
 
         Self { apps }
@@ -110,15 +125,18 @@ impl appsmodel::AppsModel {
     }
 
     fn data(&self, index: &QModelIndex, role: i32) -> QVariant {
-        let role = TodoRoles { repr: role };
+        let role = AppsRoles { repr: role };
 
-        if let Some((done, ref todo)) = self.apps.get(index.row() as usize) {
+        if let Some(app) = self.apps.get(index.row() as usize) {
             match role {
-                TodoRoles::Name => {
-                    return done.into();
+                AppsRoles::Id => {
+                    return QVariant::from(&QString::from(&app.id));
                 }
-                TodoRoles::Location => {
-                    return todo.into();
+                AppsRoles::Name => {
+                    return QVariant::from(&QString::from(&app.name));
+                }
+                AppsRoles::Location => {
+                    return QVariant::from(&QString::from(&app.location));
                 }
                 _ => {}
             }
@@ -128,8 +146,8 @@ impl appsmodel::AppsModel {
 
     fn role_names(&self) -> QHash_i32_QByteArray {
         let mut hash = QHash_i32_QByteArray::default();
-        hash.insert(TodoRoles::Name.repr, "name".into());
-        hash.insert(TodoRoles::Location.repr, "location".into());
+        hash.insert(AppsRoles::Name.repr, "name".into());
+        hash.insert(AppsRoles::Location.repr, "location".into());
         hash
     }
 }
