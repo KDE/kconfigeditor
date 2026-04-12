@@ -34,7 +34,7 @@ Kirigami.ApplicationWindow {
 
                     onClicked: pageStack.push(filesList, {
                         appId: name,
-                        location: location,
+                        location: location
                     })
                 }
             }
@@ -57,6 +57,40 @@ Kirigami.ApplicationWindow {
 
                 model: FilesModel {
                     location: filesPage.location
+                }
+
+                delegate: ItemDelegate {
+                    required property string name
+
+                    width: ListView.view.width
+                    text: name
+
+                    onClicked: pageStack.push(groupsList, {
+                        location: location,
+                        fileName: name
+                    })
+                }
+            }
+        }
+    }
+
+    Component {
+        id: groupsList
+
+        Kirigami.ScrollablePage {
+            id: groupsPage
+
+            required property string fileName
+            required property string location
+
+            title: "Groups"
+
+            ListView {
+                anchors.fill: parent
+
+                model: GroupsModel {
+                    location: groupsPage.location
+                    fileName: groupsPage.fileName
                 }
 
                 delegate: ItemDelegate {
