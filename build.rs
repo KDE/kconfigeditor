@@ -8,6 +8,7 @@ fn main() {
             "src/appsmodel.rs",
             "src/filesmodel.rs",
             "src/groupsmodel.rs",
+            "src/entrymodel.rs",
         ])
         .build();
 }

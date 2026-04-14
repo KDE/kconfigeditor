@@ -5,6 +5,7 @@ mod appsmodel;
 mod config;
 mod filesmodel;
 mod groupsmodel;
+mod entrymodel;
 
 use cxx_qt_lib::{QGuiApplication, QQmlApplicationEngine, QUrl};
 
