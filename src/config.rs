@@ -38,22 +38,29 @@ pub struct Entry {
     pub the_type: String,
     pub label: Option<Label>,
     pub default: Option<Vec<Default>>,
+    #[serde(rename = "@key")]
     pub key: Option<String>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Clone)]
+#[derive(Debug, Deserialize, PartialEq, Clone, Default)]
 #[serde(rename = "label")]
 pub struct Label(String);
 
 #[derive(Debug, Deserialize, PartialEq, Clone)]
 #[serde(rename = "default")]
-pub struct Default(String);
+pub struct Default(pub String);
 
 pub fn parse(path: &str) -> Option<Kcfg> {
     let file = File::open(path).unwrap();
     let reader = BufReader::new(file);
 
     serde_xml_rs::from_reader(reader).unwrap()
+}
+
+impl Label {
+    pub fn label(&self) -> &str {
+        return &self.0;
+    }
 }
 
 #[cfg(test)]

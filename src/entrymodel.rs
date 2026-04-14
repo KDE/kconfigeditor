@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
 use cxx_qt_lib::QString;
+use cxx_qt_lib::QVariant;
+use cxx_qt_lib::QVariantValue;
 use entrymodel::EntryRoles;
 use std::path::Path;
 use std::path::PathBuf;
@@ -11,7 +13,7 @@ use std::collections::HashSet;
 use std::fs;
 
 use crate::config;
-use crate::config::{Entry, Group, Kcfg};
+use crate::config::{Entry, Group, Kcfg, Label};
 
 #[cxx_qt::bridge]
 mod entrymodel {
@@ -34,6 +36,20 @@ mod entrymodel {
         include!("helper.h");
         #[rust_name = "entrytypes_to_variant"]
         fn typeToVariant(types: EntryTypes) -> QVariant;
+
+        #[rust_name = "read_entry_string"]
+        fn readEntry(
+            file: &QString,
+            group: &QString,
+            key: &QString,
+            defaultValue: &QString,
+        ) -> QString;
+
+        #[rust_name = "read_entry_int"]
+        fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: i32) -> i32;
+
+        #[rust_name = "read_entry_bool"]
+        fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: bool) -> bool;
     }
 
     #[qenum(EntryModel)]
@@ -136,13 +152,18 @@ impl entrymodel::EntryModel {
     fn data(&self, index: &QModelIndex, role: i32) -> QVariant {
         let role = EntryRoles { repr: role };
 
-        if let Some(group) = self.entries.get(index.row() as usize) {
+        if let Some(entry) = self.entries.get(index.row() as usize) {
             match role {
                 EntryRoles::Name => {
-                    return QVariant::from(&QString::from(&group.name.clone().unwrap_or_default()));
+                    return QVariant::from(&QString::from(
+                        &entry
+                            .name
+                            .clone()
+                            .unwrap_or(entry.key.clone().unwrap_or_default()),
+                    ));
                 }
                 EntryRoles::Type => {
-                    return match group.the_type.as_str() {
+                    return match entry.the_type.as_str() {
                         "Int" => entrytypes_to_variant(EntryTypes::Int),
                         "String" => entrytypes_to_variant(EntryTypes::String),
                         "Bool" => entrytypes_to_variant(EntryTypes::Bool),
@@ -150,12 +171,64 @@ impl entrymodel::EntryModel {
                         "Font" => entrytypes_to_variant(EntryTypes::Font),
                         "IntList" => entrytypes_to_variant(EntryTypes::IntList),
                         "StringList" => entrytypes_to_variant(EntryTypes::StringList),
-                        &_ => todo!("{}", group.the_type),
+                        &_ => todo!("{}", entry.the_type),
                     };
                 }
                 EntryRoles::Value => {
-                    // return group.
-                    return QVariant::from(&QString::from("42"));
+                    let key = entry
+                        .key
+                        .clone()
+                        .unwrap_or(entry.name.clone().unwrap_or_default());
+
+                    let default_value = match &entry.default {
+                        None => QVariant::default(),
+                        Some(defs) => QVariant::from(&QString::from(&defs[0].0.clone())),
+                    };
+
+                    return match entry.the_type.as_str() {
+                        "Int" => QVariant::from(&read_entry_int(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
+                        "String" => QVariant::from(&read_entry_string(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            &default_value.value_or_default(),
+                        )),
+                        "Bool" => QVariant::from(&read_entry_bool(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
+                        &_ => todo!("{}", entry.the_type),
+                    };
+                }
+                EntryRoles::Label => {
+                    return QVariant::from(&QString::from(
+                        entry.label.clone().unwrap_or_default().label(),
+                    ));
+                }
+                EntryRoles::DefaultValue => {
+                    let key = entry
+                        .key
+                        .clone()
+                        .unwrap_or(entry.name.clone().unwrap_or_default());
+
+                    let default_value = match &entry.default {
+                        None => QVariant::default(),
+                        Some(defs) => QVariant::from(&QString::from(&defs[0].0.clone())),
+                    };
+
+                    return match entry.the_type.as_str() {
+                        "Int" => Self::default_value::<i32>(entry),
+                        "String" => Self::default_value::<QString>(entry),
+                        "Bool" => Self::default_value::<bool>(entry),
+                        &_ => todo!("{}", entry.the_type),
+                    };
                 }
                 _ => {}
             }
@@ -163,11 +236,27 @@ impl entrymodel::EntryModel {
         QVariant::default()
     }
 
+    fn default_value<T>(entry: &Entry) -> QVariant
+    where
+        T: QVariantValue,
+    {
+        let default_value = match &entry.default {
+            None => QVariant::default(),
+            Some(defs) => QVariant::from(&QString::from(&defs[0].0.clone())),
+        };
+
+        let value: T = default_value.value_or_default();
+
+        return QVariant::from(&value);
+    }
+
     fn role_names(&self) -> QHash_i32_QByteArray {
         let mut hash = QHash_i32_QByteArray::default();
         hash.insert(EntryRoles::Name.repr, "name".into());
         hash.insert(EntryRoles::Type.repr, "type".into());
         hash.insert(EntryRoles::Value.repr, "value".into());
+        hash.insert(EntryRoles::Label.repr, "label".into());
+        hash.insert(EntryRoles::DefaultValue.repr, "defaultValue".into());
         hash
     }
 
@@ -213,8 +302,6 @@ impl entrymodel::EntryModel {
             .collect();
 
         // TODO merge duplicate entries
-
-        println!("{:?}", self.entries);
 
         self.end_reset_model();
     }

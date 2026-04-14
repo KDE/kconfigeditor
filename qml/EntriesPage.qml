@@ -23,8 +23,6 @@ Kirigami.ScrollablePage {
         anchors.fill: parent
 
         model: EntryModel {
-            id: m
-
             location: root.location
             fileName: root.fileName
             groupName: root.groupName
@@ -38,12 +36,20 @@ Kirigami.ScrollablePage {
             DelegateChoice {
                 roleValue: EntryModel.Bool
                 ItemDelegate {
+                    id: boolDelegate
+
+                    required property string name
+                    required property string label
+                    required property bool value
+                    required property bool defaultValue
+
+
                     width: ListView.view.width
 
                     contentItem: RowLayout {
                         Kirigami.TitleSubtitle {
-                            title: model.name
-                            subtitle: model.label
+                            title: boolDelegate.name
+                            subtitle: boolDelegate.label
                             Layout.fillWidth: true
                         }
 
@@ -52,18 +58,20 @@ Kirigami.ScrollablePage {
                             implicitHeight: 10
                             implicitWidth: 10
                             radius: 5
-                            visible: model.value !== model.defaultValue
+                            visible: boolSwitch.checked !== boolDelegate.defaultValue
                         }
 
                         Switch {
-                            checked: model.value
+                            id: boolSwitch
+
+                            checked: boolDelegate.value
                         }
 
                         Button {
                             icon.name: "edit-undo"
                             display: Button.IconOnly
                             text: "Revert to default"
-                            enabled: model.value !== model.defaultValue
+                            enabled: boolSwitch.checked !== boolDelegate.defaultValue
                         }
                     }
                 }
@@ -73,12 +81,19 @@ Kirigami.ScrollablePage {
                 roleValue: EntryModel.String
 
                 ItemDelegate {
+                    id: stringDelegate
+
+                    required property string name
+                    required property string label
+                    required property string value
+                    required property string defaultValue
+
                     width: ListView.view.width
 
                     contentItem: RowLayout {
                         Kirigami.TitleSubtitle {
-                            title: model.name
-                            subtitle: model.label
+                            title: stringDelegate.name
+                            subtitle: stringDelegate.label
                             Layout.fillWidth: true
                         }
 
@@ -87,18 +102,20 @@ Kirigami.ScrollablePage {
                             implicitHeight: 10
                             implicitWidth: 10
                             radius: 5
-                            visible: model.value !== model.defaultValue
+                            visible: stringTextField.text !== stringDelegate.defaultValue
                         }
 
                         TextField {
-                            text: model.value
+                            id: stringTextField
+
+                            text: stringDelegate.value
                         }
 
                         Button {
                             icon.name: "edit-undo"
                             display: Button.IconOnly
                             text: "Revert to default"
-                            enabled: model.value !== model.defaultValue
+                            enabled: stringTextField.text !== stringDelegate.defaultValue
                         }
                     }
                 }
@@ -108,12 +125,19 @@ Kirigami.ScrollablePage {
                 roleValue: EntryModel.Int
 
                 ItemDelegate {
+                    id: intDelegate
+
+                    required property string name
+                    required property string label
+                    required property int value
+                    required property int defaultValue
+
                     width: ListView.view.width
 
                     contentItem: RowLayout {
                         Kirigami.TitleSubtitle {
-                            title: model.name
-                            subtitle: model.label
+                            title: intDelegate.name
+                            subtitle: intDelegate.label
                             Layout.fillWidth: true
                         }
 
@@ -122,20 +146,22 @@ Kirigami.ScrollablePage {
                             implicitHeight: 10
                             implicitWidth: 10
                             radius: 5
-                            visible: model.value !== model.defaultValue
+                            visible: spinBox.value !== intDelegate.defaultValue
                         }
 
                         SpinBox {
-                            from: model.min ?? -2147483648
-                            to: model.max ?? 2147483647
-                            value: model.value
+                            id: spinBox
+
+                            from: intDelegate.min ?? -2147483648
+                            to: intDelegate.max ?? 2147483647
+                            value: intDelegate.value
                         }
 
                         Button {
                             icon.name: "edit-undo"
                             display: Button.IconOnly
                             text: "Revert to default"
-                            enabled: model.value !== model.defaultValue
+                            enabled: intDelegate.value !== intDelegate.defaultValue
                         }
                     }
                 }
@@ -145,17 +171,20 @@ Kirigami.ScrollablePage {
                 roleValue: EntryModel.Enum
 
                 ItemDelegate {
+                    id: enumDelegate
 
-                    id: del
-
-                    property var choices: model.choices
+                    required property string name
+                    required property string label
+                    required property string value
+                    required property string defaultValue
+                    required property list<string> choices
 
                     width: ListView.view.width
 
                     contentItem: RowLayout {
                         Kirigami.TitleSubtitle {
-                            title: model.name
-                            subtitle: model.label
+                            title: enumDelegate.name
+                            subtitle: enumDelegate.label
                             Layout.fillWidth: true
                         }
 
@@ -164,18 +193,20 @@ Kirigami.ScrollablePage {
                             implicitHeight: 10
                             implicitWidth: 10
                             radius: 5
-                            visible: model.value !== model.defaultValue
+                            visible: enumCombo.currentValue !== enumDelegate.defaultValue
                         }
 
                         ComboBox {
-                            model: del.choices
+                            id: enumCombo
+
+                            model: enumDelegate.choices
                         }
 
                         Button {
                             icon.name: "edit-undo"
                             display: Button.IconOnly
                             text: "Revert to default"
-                            enabled: model.value !== model.defaultValue
+                            enabled: enumCombo.currentValue !== enumDelegate.defaultValue
                         }
                     }
                 }
@@ -185,12 +216,19 @@ Kirigami.ScrollablePage {
                 roleValue: EntryModel.StringList
 
                 ItemDelegate {
+                    id: stringListDelegate
+
+                    required property string name
+                    required property string label
+                    required property list<string> value
+                    required property list<string> defaultValue
+
                     width: ListView.view.width
 
                     contentItem: RowLayout {
                         Kirigami.TitleSubtitle {
-                            title: model.name
-                            subtitle: model.label
+                            title: stringListDelegate.name
+                            subtitle: stringListDelegate.label
                             Layout.fillWidth: true
                         }
 
@@ -199,18 +237,20 @@ Kirigami.ScrollablePage {
                             implicitHeight: 10
                             implicitWidth: 10
                             radius: 5
-                            visible: model.value !== model.defaultValue
+                            visible: stringListText.text !== stringListDelegate.defaultValue
                         }
 
-                        Text {
-                            text: "This is supposed to be a StringList"
+                        TextField {
+                            id: stringListText
+
+                            text: stringListDelegate.value.join(";")
                         }
 
                         Button {
                             icon.name: "edit-undo"
                             display: Button.IconOnly
                             text: "Revert to default"
-                            enabled: model.value !== model.defaultValue
+                            enabled: stringListText.text !== stringListDelegate.defaultValue
                         }
                     }
                 }
