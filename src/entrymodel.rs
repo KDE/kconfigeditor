@@ -140,26 +140,26 @@ impl entrymodel::EntryModel {
         };
 
         let configs: Vec<Kcfg> = paths
-        .into_iter()
-        .map(|path| config::parse(path.unwrap().path().to_str().unwrap()))
-        .flatten()
-        .filter(|config| config.kcfgfile.as_ref().is_some())
-        .filter(|config| {
-            config
-            .kcfgfile
-            .as_ref()
-            .unwrap()
-            .name
-            .clone()
-            .unwrap_or_default()
-            == self.file_name.to_string()
-        })
-        .collect();
+            .into_iter()
+            .map(|path| config::parse(path.unwrap().path().to_str().unwrap()))
+            .flatten()
+            .filter(|config| config.kcfgfile.as_ref().is_some())
+            .filter(|config| {
+                config
+                    .kcfgfile
+                    .as_ref()
+                    .unwrap()
+                    .name
+                    .clone()
+                    .unwrap_or_default()
+                    == self.file_name.to_string()
+            })
+            .collect();
 
         self.as_mut().rust_mut().groups = configs
-        .iter()
-        .flat_map(|config| config.group.clone())
-        .collect();
+            .iter()
+            .flat_map(|config| config.group.clone())
+            .collect();
 
         // TODO merge duplicate groups
 

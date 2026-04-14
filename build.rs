@@ -3,12 +3,18 @@
 
 use cxx_qt_build::{CxxQtBuilder, QmlModule};
 fn main() {
-    CxxQtBuilder::new_qml_module(QmlModule::new("org.kde.configeditor").qml_file("qml/main.qml"))
-        .files([
-            "src/appsmodel.rs",
-            "src/filesmodel.rs",
-            "src/groupsmodel.rs",
-            "src/entrymodel.rs",
-        ])
-        .build();
+    CxxQtBuilder::new_qml_module(
+        QmlModule::new("org.kde.configeditor")
+            .qml_file("qml/main.qml")
+            .qml_file("qml/AppsPage.qml")
+            .qml_file("qml/FilesPage.qml")
+            .qml_file("qml/GroupsPage.qml"),
+    )
+    .files([
+        "src/appsmodel.rs",
+        "src/filesmodel.rs",
+        "src/groupsmodel.rs",
+        "src/entrymodel.rs",
+    ])
+    .build();
 }
