@@ -29,6 +29,12 @@ Kirigami.ScrollablePage {
 
             width: ListView.view.width
             text: name
+
+            onClicked: pageStack.push(Qt.resolvedUrl("EntriesPage.qml"), {
+                location: location,
+                fileName: fileName,
+                groupName: name,
+            })
         }
     }
 }

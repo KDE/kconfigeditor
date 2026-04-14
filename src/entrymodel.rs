@@ -11,7 +11,7 @@ use std::collections::HashSet;
 use std::fs;
 
 use crate::config;
-use crate::config::{Group, Kcfg};
+use crate::config::{Entry, Group, Kcfg};
 
 #[cxx_qt::bridge]
 mod entrymodel {
@@ -30,16 +30,39 @@ mod entrymodel {
 
         include!("cxx-qt-lib/qhash.h");
         type QHash_i32_QByteArray = cxx_qt_lib::QHash<cxx_qt_lib::QHashPair_i32_QByteArray>;
+
+        include!("helper.h");
+        #[rust_name = "entrytypes_to_variant"]
+        fn typeToVariant(types: EntryTypes) -> QVariant;
     }
 
     #[qenum(EntryModel)]
     enum EntryRoles {
         Name,
+        Type,
+        Value,
+        Choices,
+        Label,
+        Min,
+        Max,
+        DefaultValue,
+    }
+
+    #[qenum(EntryModel)]
+    enum EntryTypes {
+        String,
+        Bool,
+        Int,
+        Enum,
+        Font,
+        IntList,
+        StringList,
     }
 
     unsafe extern "RustQt" {
         #[qobject]
         #[qml_element]
+        #[qproperty(QString, group_name, cxx_name="groupName", READ, WRITE = set_group_name, NOTIFY = group_name_changed)]
         #[qproperty(QString, file_name, cxx_name="fileName", READ, WRITE = set_file_name, NOTIFY = file_name_changed)]
         #[qproperty(QString, location, READ, WRITE = set_location, NOTIFY = location_changed)]
         #[base = QAbstractListModel]
@@ -64,12 +87,18 @@ mod entrymodel {
         #[rust_name = "end_reset_model"]
         fn endResetModel(self: Pin<&mut Self>);
 
+        fn set_group_name(self: Pin<&mut Self>, group_name: QString);
+
         fn set_file_name(self: Pin<&mut Self>, file_name: QString);
 
         fn set_location(self: Pin<&mut Self>, location: QString);
 
         #[qsignal]
-        #[cxx_name = "filenameChanged"]
+        #[cxx_name = "groupNameChanged"]
+        fn group_name_changed(self: Pin<&mut Self>);
+
+        #[qsignal]
+        #[cxx_name = "fileNameChanged"]
         fn file_name_changed(self: Pin<&mut Self>);
 
         #[qsignal]
@@ -79,7 +108,8 @@ mod entrymodel {
 }
 
 pub struct EntryModelRust {
-    groups: Vec<Group>,
+    entries: Vec<Entry>,
+    group_name: QString,
     file_name: QString,
     location: QString,
 }
@@ -87,7 +117,8 @@ pub struct EntryModelRust {
 impl Default for EntryModelRust {
     fn default() -> Self {
         Self {
-            groups: vec![],
+            entries: vec![],
+            group_name: QString::from(""),
             file_name: QString::from(""),
             location: QString::from(""),
         }
@@ -99,16 +130,32 @@ use entrymodel::*;
 
 impl entrymodel::EntryModel {
     fn row_count(&self, _parent: &QModelIndex) -> i32 {
-        self.groups.len() as i32
+        self.entries.len() as i32
     }
 
     fn data(&self, index: &QModelIndex, role: i32) -> QVariant {
         let role = EntryRoles { repr: role };
 
-        if let Some(group) = self.groups.get(index.row() as usize) {
+        if let Some(group) = self.entries.get(index.row() as usize) {
             match role {
                 EntryRoles::Name => {
-                    return QVariant::from(&QString::from(&group.name));
+                    return QVariant::from(&QString::from(&group.name.clone().unwrap_or_default()));
+                }
+                EntryRoles::Type => {
+                    return match group.the_type.as_str() {
+                        "Int" => entrytypes_to_variant(EntryTypes::Int),
+                        "String" => entrytypes_to_variant(EntryTypes::String),
+                        "Bool" => entrytypes_to_variant(EntryTypes::Bool),
+                        "Enum" => entrytypes_to_variant(EntryTypes::Enum),
+                        "Font" => entrytypes_to_variant(EntryTypes::Font),
+                        "IntList" => entrytypes_to_variant(EntryTypes::IntList),
+                        "StringList" => entrytypes_to_variant(EntryTypes::StringList),
+                        &_ => todo!("{}", group.the_type),
+                    };
+                }
+                EntryRoles::Value => {
+                    // return group.
+                    return QVariant::from(&QString::from("42"));
                 }
                 _ => {}
             }
@@ -119,6 +166,8 @@ impl entrymodel::EntryModel {
     fn role_names(&self) -> QHash_i32_QByteArray {
         let mut hash = QHash_i32_QByteArray::default();
         hash.insert(EntryRoles::Name.repr, "name".into());
+        hash.insert(EntryRoles::Type.repr, "type".into());
+        hash.insert(EntryRoles::Value.repr, "value".into());
         hash
     }
 
@@ -156,14 +205,25 @@ impl entrymodel::EntryModel {
             })
             .collect();
 
-        self.as_mut().rust_mut().groups = configs
+        self.as_mut().rust_mut().entries = configs
             .iter()
             .flat_map(|config| config.group.clone())
+            .filter(|group| group.name == self.group_name.to_string())
+            .flat_map(|group| group.entry.unwrap_or_default())
             .collect();
 
-        // TODO merge duplicate groups
+        // TODO merge duplicate entries
+
+        println!("{:?}", self.entries);
 
         self.end_reset_model();
+    }
+
+    pub fn set_group_name(mut self: Pin<&mut Self>, group_name: QString) {
+        self.as_mut().rust_mut().group_name = group_name;
+        self.as_mut().group_name_changed();
+
+        self.rebuild();
     }
 
     pub fn set_file_name(mut self: Pin<&mut Self>, file_name: QString) {

@@ -8,7 +8,8 @@ fn main() {
             .qml_file("qml/main.qml")
             .qml_file("qml/AppsPage.qml")
             .qml_file("qml/FilesPage.qml")
-            .qml_file("qml/GroupsPage.qml"),
+            .qml_file("qml/GroupsPage.qml")
+            .qml_file("qml/EntriesPage.qml"),
     )
     .files([
         "src/appsmodel.rs",
@@ -16,5 +17,6 @@ fn main() {
         "src/groupsmodel.rs",
         "src/entrymodel.rs",
     ])
+    .cpp_file("src/helper.cpp")
     .build();
 }
