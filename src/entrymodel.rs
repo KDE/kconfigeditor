@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
 use cxx_qt_lib::{
-    QColor, QDateTime, QFont, QPoint, QRect, QSize, QString, QUrl, QVariant, QVariantValue,
+    QColor, QDateTime, QFont, QList, QPoint, QPointF, QRect, QRectF, QSize, QSizeF, QString, QTime,
+    QUrl, QVariant, QVariantValue,
 };
 use entrymodel::EntryRoles;
 use std::path::PathBuf;
@@ -43,17 +44,29 @@ mod entrymodel {
         include!("cxx-qt-lib/qdatetime.h");
         type QDateTime = cxx_qt_lib::QDateTime;
 
+        include!("cxx-qt-lib/qtime.h");
+        type QTime = cxx_qt_lib::QTime;
+
         include!("cxx-qt-lib/qrect.h");
         type QRect = cxx_qt_lib::QRect;
 
+        include!("cxx-qt-lib/qrectf.h");
+        type QRectF = cxx_qt_lib::QRectF;
+
         include!("cxx-qt-lib/qsize.h");
         type QSize = cxx_qt_lib::QSize;
+
+        include!("cxx-qt-lib/qsizef.h");
+        type QSizeF = cxx_qt_lib::QSizeF;
 
         include!("cxx-qt-lib/qurl.h");
         type QUrl = cxx_qt_lib::QUrl;
 
         include!("cxx-qt-lib/qpoint.h");
         type QPoint = cxx_qt_lib::QPoint;
+
+        include!("cxx-qt-lib/qpointf.h");
+        type QPointF = cxx_qt_lib::QPointF;
 
         include!("helper.h");
         #[rust_name = "entrytypes_to_variant"]
@@ -88,8 +101,24 @@ mod entrymodel {
         #[rust_name = "read_entry_rect"]
         fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: QRect) -> QRect;
 
+        #[rust_name = "read_entry_rectf"]
+        fn readEntry(
+            file: &QString,
+            group: &QString,
+            key: &QString,
+            defaultValue: QRectF,
+        ) -> QRectF;
+
         #[rust_name = "read_entry_size"]
         fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: QSize) -> QSize;
+
+        #[rust_name = "read_entry_sizef"]
+        fn readEntry(
+            file: &QString,
+            group: &QString,
+            key: &QString,
+            defaultValue: QSizeF,
+        ) -> QSizeF;
 
         #[rust_name = "read_entry_point"]
         fn readEntry(
@@ -98,6 +127,17 @@ mod entrymodel {
             key: &QString,
             defaultValue: QPoint,
         ) -> QPoint;
+
+        #[rust_name = "read_entry_pointf"]
+        fn readEntry(
+            file: &QString,
+            group: &QString,
+            key: &QString,
+            defaultValue: QPointF,
+        ) -> QPointF;
+
+        #[rust_name = "read_entry_time"]
+        fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: QTime) -> QTime;
 
         #[rust_name = "read_entry_url"]
         fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: QUrl) -> QUrl;
@@ -164,6 +204,11 @@ mod entrymodel {
         Url,
         Password,
         ULongLong,
+        Time,
+        RectF,
+        PointF,
+        SizeF,
+        UrlList,
     }
 
     unsafe extern "RustQt" {
@@ -275,6 +320,11 @@ impl entrymodel::EntryModel {
                         Type::Url => entrytypes_to_variant(EntryTypes::Url),
                         Type::Password => entrytypes_to_variant(EntryTypes::Password),
                         Type::ULongLong => entrytypes_to_variant(EntryTypes::ULongLong),
+                        Type::Time => entrytypes_to_variant(EntryTypes::Time),
+                        Type::RectF => entrytypes_to_variant(EntryTypes::RectF),
+                        Type::PointF => entrytypes_to_variant(EntryTypes::PointF),
+                        Type::SizeF => entrytypes_to_variant(EntryTypes::SizeF),
+                        Type::UrlList => entrytypes_to_variant(EntryTypes::UrlList),
                     };
                 }
                 EntryRoles::Value => {
@@ -379,6 +429,31 @@ impl entrymodel::EntryModel {
                             &QString::from(key),
                             default_value.value_or_default(),
                         )),
+                        Type::RectF => QVariant::from(&read_entry_rectf(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
+                        Type::SizeF => QVariant::from(&read_entry_sizef(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
+                        Type::PointF => QVariant::from(&read_entry_pointf(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
+                        Type::Time => QVariant::from(&read_entry_time(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
+                        Type::UrlList => QVariant::default(),
                     };
                 }
                 EntryRoles::Label => {
@@ -418,6 +493,11 @@ impl entrymodel::EntryModel {
                         Type::Url => Self::default_value::<QUrl>(entry),
                         Type::Password => QVariant::default(), // TODO
                         Type::ULongLong => Self::default_value::<u64>(entry),
+                        Type::RectF => Self::default_value::<QRectF>(entry),
+                        Type::SizeF => Self::default_value::<QSizeF>(entry),
+                        Type::PointF => Self::default_value::<QPointF>(entry),
+                        Type::Time => Self::default_value::<QTime>(entry),
+                        Type::UrlList => QVariant::default(), //Self::default_value::<QList<QUrl>>(entry),
                     };
                 }
                 _ => {}

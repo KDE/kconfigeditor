@@ -64,6 +64,11 @@ pub enum Type {
     Url,
     Password,
     ULongLong,
+    RectF,
+    SizeF,
+    PointF,
+    Time,
+    UrlList,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Clone, Default)]
