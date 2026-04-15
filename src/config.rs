@@ -35,11 +35,24 @@ pub struct Entry {
     #[serde(rename = "@name")]
     pub name: Option<String>,
     #[serde(rename = "@type")]
-    pub the_type: String,
+    pub the_type: Type,
     pub label: Option<Label>,
     pub default: Option<Vec<Default>>,
     #[serde(rename = "@key")]
     pub key: Option<String>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Clone)]
+pub enum Type {
+    String,
+    Int,
+    UInt,
+    Bool,
+    Font,
+    IntList,
+    StringList,
+    DateTime,
+    Enum,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Clone, Default)]
@@ -80,7 +93,7 @@ mod tests {
             k.group[0].entry.as_ref().unwrap()[0].name,
             Some(String::from("firstRun"))
         );
-        assert_eq!(k.group[0].entry.as_ref().unwrap()[0].the_type, "Bool");
+        assert_eq!(k.group[0].entry.as_ref().unwrap()[0].the_type, Type::Bool);
         assert_eq!(
             k.group[0].entry.as_ref().unwrap()[0].label,
             Some(Label(String::from("First run")))
@@ -102,7 +115,10 @@ mod tests {
             k.group[2].entry.as_ref().unwrap()[0].name,
             Some(String::from("EnabledBackends"))
         );
-        assert_eq!(k.group[2].entry.as_ref().unwrap()[0].the_type, "StringList");
+        assert_eq!(
+            k.group[2].entry.as_ref().unwrap()[0].the_type,
+            Type::StringList
+        );
         assert_eq!(
             k.group[2].entry.as_ref().unwrap()[0].label,
             Some(Label(String::from("Enabled backends")))

@@ -1,9 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Nicolas Fella <nicolas.fella@gmx.de>
 // SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
-use cxx_qt_lib::QString;
-use cxx_qt_lib::QVariant;
-use cxx_qt_lib::QVariantValue;
+use cxx_qt_lib::{QFont, QList, QString, QVariant, QVariantValue};
 use entrymodel::EntryRoles;
 use std::path::Path;
 use std::path::PathBuf;
@@ -13,7 +11,7 @@ use std::collections::HashSet;
 use std::fs;
 
 use crate::config;
-use crate::config::{Entry, Group, Kcfg, Label};
+use crate::config::{Entry, Group, Kcfg, Label, Type};
 
 #[cxx_qt::bridge]
 mod entrymodel {
@@ -29,6 +27,12 @@ mod entrymodel {
 
         include!("cxx-qt-lib/qstring.h");
         type QString = cxx_qt_lib::QString;
+
+        include!("cxx-qt-lib/qstringlist.h");
+        type QStringList = cxx_qt_lib::QStringList;
+
+        include!("cxx-qt-lib/qfont.h");
+        type QFont = cxx_qt_lib::QFont;
 
         include!("cxx-qt-lib/qhash.h");
         type QHash_i32_QByteArray = cxx_qt_lib::QHash<cxx_qt_lib::QHashPair_i32_QByteArray>;
@@ -48,8 +52,22 @@ mod entrymodel {
         #[rust_name = "read_entry_int"]
         fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: i32) -> i32;
 
+        #[rust_name = "read_entry_uint"]
+        fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: u32) -> u32;
+
         #[rust_name = "read_entry_bool"]
         fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: bool) -> bool;
+
+        #[rust_name = "read_entry_font"]
+        fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: QFont) -> QFont;
+
+        #[rust_name = "read_entry_string_list"]
+        fn readEntry(
+            file: &QString,
+            group: &QString,
+            key: &QString,
+            defaultValue: QStringList,
+        ) -> QStringList;
     }
 
     #[qenum(EntryModel)]
@@ -69,10 +87,12 @@ mod entrymodel {
         String,
         Bool,
         Int,
+        UInt,
         Enum,
         Font,
         IntList,
         StringList,
+        DateTime,
     }
 
     unsafe extern "RustQt" {
@@ -163,15 +183,16 @@ impl entrymodel::EntryModel {
                     ));
                 }
                 EntryRoles::Type => {
-                    return match entry.the_type.as_str() {
-                        "Int" => entrytypes_to_variant(EntryTypes::Int),
-                        "String" => entrytypes_to_variant(EntryTypes::String),
-                        "Bool" => entrytypes_to_variant(EntryTypes::Bool),
-                        "Enum" => entrytypes_to_variant(EntryTypes::Enum),
-                        "Font" => entrytypes_to_variant(EntryTypes::Font),
-                        "IntList" => entrytypes_to_variant(EntryTypes::IntList),
-                        "StringList" => entrytypes_to_variant(EntryTypes::StringList),
-                        &_ => todo!("{}", entry.the_type),
+                    return match entry.the_type {
+                        Type::Int => entrytypes_to_variant(EntryTypes::Int),
+                        Type::UInt => entrytypes_to_variant(EntryTypes::UInt),
+                        Type::String => entrytypes_to_variant(EntryTypes::String),
+                        Type::Bool => entrytypes_to_variant(EntryTypes::Bool),
+                        Type::Font => entrytypes_to_variant(EntryTypes::Font),
+                        Type::IntList => entrytypes_to_variant(EntryTypes::IntList),
+                        Type::StringList => entrytypes_to_variant(EntryTypes::StringList),
+                        Type::DateTime => entrytypes_to_variant(EntryTypes::DateTime),
+                        Type::Enum => entrytypes_to_variant(EntryTypes::Enum),
                     };
                 }
                 EntryRoles::Value => {
@@ -185,26 +206,41 @@ impl entrymodel::EntryModel {
                         Some(defs) => QVariant::from(&QString::from(&defs[0].0.clone())),
                     };
 
-                    return match entry.the_type.as_str() {
-                        "Int" => QVariant::from(&read_entry_int(
+                    return match entry.the_type {
+                        Type::Int => QVariant::from(&read_entry_int(
                             &self.file_name,
                             &self.group_name,
                             &QString::from(key),
                             default_value.value_or_default(),
                         )),
-                        "String" => QVariant::from(&read_entry_string(
+                        Type::UInt => QVariant::from(&read_entry_uint(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
+                        Type::String => QVariant::from(&read_entry_string(
                             &self.file_name,
                             &self.group_name,
                             &QString::from(key),
                             &default_value.value_or_default(),
                         )),
-                        "Bool" => QVariant::from(&read_entry_bool(
+                        Type::Bool => QVariant::from(&read_entry_bool(
                             &self.file_name,
                             &self.group_name,
                             &QString::from(key),
                             default_value.value_or_default(),
                         )),
-                        &_ => todo!("{}", entry.the_type),
+                        Type::Font => QVariant::default(),
+                        Type::IntList => QVariant::default(),
+                        Type::StringList => QVariant::from(&read_entry_string_list(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
+                        Type::DateTime => QVariant::default(),
+                        Type::Enum => QVariant::default(),
                     };
                 }
                 EntryRoles::Label => {
@@ -223,11 +259,16 @@ impl entrymodel::EntryModel {
                         Some(defs) => QVariant::from(&QString::from(&defs[0].0.clone())),
                     };
 
-                    return match entry.the_type.as_str() {
-                        "Int" => Self::default_value::<i32>(entry),
-                        "String" => Self::default_value::<QString>(entry),
-                        "Bool" => Self::default_value::<bool>(entry),
-                        &_ => todo!("{}", entry.the_type),
+                    return match entry.the_type {
+                        Type::Int => Self::default_value::<i32>(entry),
+                        Type::UInt => Self::default_value::<u32>(entry),
+                        Type::String => Self::default_value::<QString>(entry),
+                        Type::Bool => Self::default_value::<bool>(entry),
+                        Type::Font => QVariant::default(), // TODO
+                        Type::IntList => QVariant::default(), // TODO
+                        Type::StringList => Self::default_value::<QStringList>(entry),
+                        Type::DateTime => QVariant::default(), // TODO
+                        Type::Enum => QVariant::default(),     // TODO
                     };
                 }
                 _ => {}
