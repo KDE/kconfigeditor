@@ -55,11 +55,17 @@ mod entrymodel {
         #[rust_name = "read_entry_uint"]
         fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: u32) -> u32;
 
+        #[rust_name = "read_entry_double"]
+        fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: f64) -> f64;
+
         #[rust_name = "read_entry_bool"]
         fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: bool) -> bool;
 
         #[rust_name = "read_entry_font"]
         fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: QFont) -> QFont;
+
+        #[rust_name = "read_entry_longlong"]
+        fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: i64) -> i64;
 
         #[rust_name = "read_entry_string_list"]
         fn readEntry(
@@ -93,6 +99,17 @@ mod entrymodel {
         IntList,
         StringList,
         DateTime,
+        PathList,
+        Double,
+        Path,
+        Color,
+        Rect,
+        LongLong,
+        Size,
+        Point,
+        Url,
+        Password,
+        ULongLong,
     }
 
     unsafe extern "RustQt" {
@@ -193,6 +210,17 @@ impl entrymodel::EntryModel {
                         Type::StringList => entrytypes_to_variant(EntryTypes::StringList),
                         Type::DateTime => entrytypes_to_variant(EntryTypes::DateTime),
                         Type::Enum => entrytypes_to_variant(EntryTypes::Enum),
+                        Type::PathList => entrytypes_to_variant(EntryTypes::PathList),
+                        Type::Double => entrytypes_to_variant(EntryTypes::Double),
+                        Type::Path => entrytypes_to_variant(EntryTypes::Path),
+                        Type::Color => entrytypes_to_variant(EntryTypes::Color),
+                        Type::Rect => entrytypes_to_variant(EntryTypes::Rect),
+                        Type::LongLong => entrytypes_to_variant(EntryTypes::LongLong),
+                        Type::Size => entrytypes_to_variant(EntryTypes::Size),
+                        Type::Point => entrytypes_to_variant(EntryTypes::Point),
+                        Type::Url => entrytypes_to_variant(EntryTypes::Url),
+                        Type::Password => entrytypes_to_variant(EntryTypes::Password),
+                        Type::ULongLong => entrytypes_to_variant(EntryTypes::ULongLong),
                     };
                 }
                 EntryRoles::Value => {
@@ -241,6 +269,27 @@ impl entrymodel::EntryModel {
                         )),
                         Type::DateTime => QVariant::default(),
                         Type::Enum => QVariant::default(),
+                        Type::PathList => QVariant::default(),
+                        Type::Path => QVariant::default(),
+                        Type::Double => QVariant::from(&read_entry_double(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
+                        Type::Color => QVariant::default(),
+                        Type::Rect => QVariant::default(),
+                        Type::LongLong => QVariant::from(&read_entry_longlong(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
+                        Type::Size => QVariant::default(),
+                        Type::Point => QVariant::default(),
+                        Type::Url => QVariant::default(),
+                        Type::Password => QVariant::default(),
+                        Type::ULongLong => QVariant::default(),
                     };
                 }
                 EntryRoles::Label => {
@@ -269,6 +318,17 @@ impl entrymodel::EntryModel {
                         Type::StringList => Self::default_value::<QStringList>(entry),
                         Type::DateTime => QVariant::default(), // TODO
                         Type::Enum => QVariant::default(),     // TODO
+                        Type::PathList => QVariant::default(), // TODO
+                        Type::Path => QVariant::default(),     // TODO
+                        Type::Double => Self::default_value::<f64>(entry),
+                        Type::Color => QVariant::default(), // TODO
+                        Type::Rect => QVariant::default(),  // TODO
+                        Type::LongLong => QVariant::default(), // TODO
+                        Type::Size => QVariant::default(),  // TODO
+                        Type::Point => QVariant::default(), // TODO
+                        Type::Url => QVariant::default(),   // TODO
+                        Type::Password => QVariant::default(), // TODO
+                        Type::ULongLong => QVariant::default(), // TODO
                     };
                 }
                 _ => {}

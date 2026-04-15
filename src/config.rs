@@ -53,6 +53,17 @@ pub enum Type {
     StringList,
     DateTime,
     Enum,
+    PathList,
+    Double,
+    Path,
+    Color,
+    Rect,
+    LongLong,
+    Size,
+    Point,
+    Url,
+    Password,
+    ULongLong,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Clone, Default)]
