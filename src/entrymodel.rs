@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: 2026 Nicolas Fella <nicolas.fella@gmx.de>
 // SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
-use cxx_qt_lib::{QFont, QList, QString, QVariant, QVariantValue};
+use cxx_qt_lib::{
+    QColor, QDateTime, QFont, QPoint, QRect, QSize, QString, QUrl, QVariant, QVariantValue,
+};
 use entrymodel::EntryRoles;
-use std::path::Path;
 use std::path::PathBuf;
 use std::pin::Pin;
 
-use std::collections::HashSet;
 use std::fs;
 
 use crate::config;
@@ -34,8 +34,26 @@ mod entrymodel {
         include!("cxx-qt-lib/qfont.h");
         type QFont = cxx_qt_lib::QFont;
 
+        include!("cxx-qt-lib/qcolor.h");
+        type QColor = cxx_qt_lib::QColor;
+
         include!("cxx-qt-lib/qhash.h");
         type QHash_i32_QByteArray = cxx_qt_lib::QHash<cxx_qt_lib::QHashPair_i32_QByteArray>;
+
+        include!("cxx-qt-lib/qdatetime.h");
+        type QDateTime = cxx_qt_lib::QDateTime;
+
+        include!("cxx-qt-lib/qrect.h");
+        type QRect = cxx_qt_lib::QRect;
+
+        include!("cxx-qt-lib/qsize.h");
+        type QSize = cxx_qt_lib::QSize;
+
+        include!("cxx-qt-lib/qurl.h");
+        type QUrl = cxx_qt_lib::QUrl;
+
+        include!("cxx-qt-lib/qpoint.h");
+        type QPoint = cxx_qt_lib::QPoint;
 
         include!("helper.h");
         #[rust_name = "entrytypes_to_variant"]
@@ -66,6 +84,42 @@ mod entrymodel {
 
         #[rust_name = "read_entry_longlong"]
         fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: i64) -> i64;
+
+        #[rust_name = "read_entry_rect"]
+        fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: QRect) -> QRect;
+
+        #[rust_name = "read_entry_size"]
+        fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: QSize) -> QSize;
+
+        #[rust_name = "read_entry_point"]
+        fn readEntry(
+            file: &QString,
+            group: &QString,
+            key: &QString,
+            defaultValue: QPoint,
+        ) -> QPoint;
+
+        #[rust_name = "read_entry_url"]
+        fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: QUrl) -> QUrl;
+
+        #[rust_name = "read_entry_ulonglong"]
+        fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: u64) -> u64;
+
+        #[rust_name = "read_entry_color"]
+        fn readEntry(
+            file: &QString,
+            group: &QString,
+            key: &QString,
+            defaultValue: QColor,
+        ) -> QColor;
+
+        #[rust_name = "read_entry_datetime"]
+        fn readEntry(
+            file: &QString,
+            group: &QString,
+            key: &QString,
+            defaultValue: QDateTime,
+        ) -> QDateTime;
 
         #[rust_name = "read_entry_string_list"]
         fn readEntry(
@@ -267,7 +321,12 @@ impl entrymodel::EntryModel {
                             &QString::from(key),
                             default_value.value_or_default(),
                         )),
-                        Type::DateTime => QVariant::default(),
+                        Type::DateTime => QVariant::from(&read_entry_datetime(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
                         Type::Enum => QVariant::default(),
                         Type::PathList => QVariant::default(),
                         Type::Path => QVariant::default(),
@@ -277,19 +336,49 @@ impl entrymodel::EntryModel {
                             &QString::from(key),
                             default_value.value_or_default(),
                         )),
-                        Type::Color => QVariant::default(),
-                        Type::Rect => QVariant::default(),
+                        Type::Color => QVariant::from(&read_entry_color(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
+                        Type::Rect => QVariant::from(&read_entry_rect(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
                         Type::LongLong => QVariant::from(&read_entry_longlong(
                             &self.file_name,
                             &self.group_name,
                             &QString::from(key),
                             default_value.value_or_default(),
                         )),
-                        Type::Size => QVariant::default(),
-                        Type::Point => QVariant::default(),
-                        Type::Url => QVariant::default(),
+                        Type::Size => QVariant::from(&read_entry_size(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
+                        Type::Point => QVariant::from(&read_entry_point(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
+                        Type::Url => QVariant::from(&read_entry_url(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
                         Type::Password => QVariant::default(),
-                        Type::ULongLong => QVariant::default(),
+                        Type::ULongLong => QVariant::from(&read_entry_ulonglong(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
                     };
                 }
                 EntryRoles::Label => {
@@ -316,19 +405,19 @@ impl entrymodel::EntryModel {
                         Type::Font => QVariant::default(), // TODO
                         Type::IntList => QVariant::default(), // TODO
                         Type::StringList => Self::default_value::<QStringList>(entry),
-                        Type::DateTime => QVariant::default(), // TODO
-                        Type::Enum => QVariant::default(),     // TODO
+                        Type::DateTime => Self::default_value::<QDateTime>(entry),
+                        Type::Enum => QVariant::default(), // TODO
                         Type::PathList => QVariant::default(), // TODO
-                        Type::Path => QVariant::default(),     // TODO
+                        Type::Path => QVariant::default(), // TODO
                         Type::Double => Self::default_value::<f64>(entry),
-                        Type::Color => QVariant::default(), // TODO
-                        Type::Rect => QVariant::default(),  // TODO
-                        Type::LongLong => QVariant::default(), // TODO
-                        Type::Size => QVariant::default(),  // TODO
-                        Type::Point => QVariant::default(), // TODO
-                        Type::Url => QVariant::default(),   // TODO
+                        Type::Color => Self::default_value::<QColor>(entry),
+                        Type::Rect => Self::default_value::<QRect>(entry),
+                        Type::LongLong => Self::default_value::<i64>(entry),
+                        Type::Size => Self::default_value::<QSize>(entry),
+                        Type::Point => Self::default_value::<QPoint>(entry),
+                        Type::Url => Self::default_value::<QUrl>(entry),
                         Type::Password => QVariant::default(), // TODO
-                        Type::ULongLong => QVariant::default(), // TODO
+                        Type::ULongLong => Self::default_value::<u64>(entry),
                     };
                 }
                 _ => {}
