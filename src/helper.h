@@ -23,3 +23,5 @@ T readEntry(const QString &file, const QString &group, const QString &key, const
     KConfig c(file);
     return c.group(group).readEntry<T>(key, defaultValue);
 }
+
+QVariant readIntListEntryAsVariant(const QString &file, const QString &group, const QString &key, const QString &defaultValueString);

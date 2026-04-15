@@ -68,6 +68,9 @@ mod entrymodel {
         include!("cxx-qt-lib/qpointf.h");
         type QPointF = cxx_qt_lib::QPointF;
 
+        include!("cxx-qt-lib/qlist.h");
+        type QList_i32 = cxx_qt_lib::QList<i32>;
+
         include!("helper.h");
         #[rust_name = "entrytypes_to_variant"]
         fn typeToVariant(types: EntryTypes) -> QVariant;
@@ -144,6 +147,14 @@ mod entrymodel {
 
         #[rust_name = "read_entry_ulonglong"]
         fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: u64) -> u64;
+
+        #[rust_name = "read_entry_int_list_as_variant"]
+        fn readIntListEntryAsVariant(
+            file: &QString,
+            group: &QString,
+            key: &QString,
+            defaultValue: &QString,
+        ) -> QVariant;
 
         #[rust_name = "read_entry_color"]
         fn readEntry(
@@ -363,8 +374,18 @@ impl entrymodel::EntryModel {
                             &QString::from(key),
                             default_value.value_or_default(),
                         )),
-                        Type::Font => QVariant::default(),
-                        Type::IntList => QVariant::default(),
+                        Type::Font => QVariant::from(&read_entry_font(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            default_value.value_or_default(),
+                        )),
+                        Type::IntList => read_entry_int_list_as_variant(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            &default_value.value_or_default(),
+                        ),
                         Type::StringList => QVariant::from(&read_entry_string_list(
                             &self.file_name,
                             &self.group_name,
@@ -422,7 +443,12 @@ impl entrymodel::EntryModel {
                             &QString::from(key),
                             default_value.value_or_default(),
                         )),
-                        Type::Password => QVariant::default(),
+                        Type::Password => QVariant::from(&read_entry_string(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            &default_value.value_or_default(),
+                        )),
                         Type::ULongLong => QVariant::from(&read_entry_ulonglong(
                             &self.file_name,
                             &self.group_name,
@@ -477,13 +503,13 @@ impl entrymodel::EntryModel {
                         Type::UInt => Self::default_value::<u32>(entry),
                         Type::String => Self::default_value::<QString>(entry),
                         Type::Bool => Self::default_value::<bool>(entry),
-                        Type::Font => QVariant::default(), // TODO
+                        Type::Font => Self::default_value::<QFont>(entry),
                         Type::IntList => QVariant::default(), // TODO
                         Type::StringList => Self::default_value::<QStringList>(entry),
                         Type::DateTime => Self::default_value::<QDateTime>(entry),
-                        Type::Enum => QVariant::default(), // TODO
-                        Type::PathList => QVariant::default(), // TODO
-                        Type::Path => QVariant::default(), // TODO
+                        Type::Enum => Self::default_value::<QString>(entry),
+                        Type::PathList => Self::default_value::<QStringList>(entry),
+                        Type::Path => Self::default_value::<QString>(entry),
                         Type::Double => Self::default_value::<f64>(entry),
                         Type::Color => Self::default_value::<QColor>(entry),
                         Type::Rect => Self::default_value::<QRect>(entry),
@@ -491,7 +517,7 @@ impl entrymodel::EntryModel {
                         Type::Size => Self::default_value::<QSize>(entry),
                         Type::Point => Self::default_value::<QPoint>(entry),
                         Type::Url => Self::default_value::<QUrl>(entry),
-                        Type::Password => QVariant::default(), // TODO
+                        Type::Password => Self::default_value::<QString>(entry),
                         Type::ULongLong => Self::default_value::<u64>(entry),
                         Type::RectF => Self::default_value::<QRectF>(entry),
                         Type::SizeF => Self::default_value::<QSizeF>(entry),
