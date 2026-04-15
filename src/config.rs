@@ -78,7 +78,13 @@ pub fn parse(path: &str) -> Option<Kcfg> {
     let file = File::open(path).unwrap();
     let reader = BufReader::new(file);
 
-    serde_xml_rs::from_reader(reader).unwrap()
+    let result: Result<Kcfg, _> = serde_xml_rs::from_reader(reader);
+
+    if result.is_err() {
+        println!("failed to parse {}", path);
+    }
+
+    Some(result.unwrap())
 }
 
 impl Label {

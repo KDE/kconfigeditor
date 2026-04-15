@@ -366,7 +366,6 @@ impl entrymodel::EntryModel {
 
         let mut path = PathBuf::new();
         path.push(&self.location.to_string());
-        path.push("files");
         path.push("share");
         path.push("config.kcfg");
 

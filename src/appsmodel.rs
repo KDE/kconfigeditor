@@ -9,6 +9,8 @@ use libflatpak::{Installation, RefKind};
 use appsmodel::AppsRoles;
 use cxx_qt_lib::QString;
 
+use std::path::PathBuf;
+
 #[cxx_qt::bridge]
 mod appsmodel {
     unsafe extern "C++" {
@@ -72,18 +74,14 @@ pub struct AppsModelRust {
     apps: Vec<App>,
 }
 
-fn g_to_q(input: &GString) -> QString {
-    QString::from(input.as_str())
-}
-
 impl Default for AppsModelRust {
     fn default() -> Self {
         let mut apps = vec![];
 
         apps.push(App {
             id: String::from("global"),
-                  name: String::from("Global"),
-                  location: String::default(),
+            name: String::from("Global"),
+            location: String::from("/usr"),
         });
 
         let cancellable = Cancellable::new();
@@ -96,10 +94,14 @@ impl Default for AppsModelRust {
                 .unwrap();
 
             for r in refs {
+                let mut location = PathBuf::new();
+                location.push(r.deploy_dir().unwrap());
+                location.push("files");
+
                 apps.push(App {
                     id: r.name().unwrap().into(),
                     name: r.appdata_name().unwrap().into(),
-                    location: r.deploy_dir().unwrap().into(),
+                    location: location.into_os_string().into_string().unwrap(),
                 });
             }
         }
@@ -111,10 +113,14 @@ impl Default for AppsModelRust {
             .unwrap();
 
         for r in refs {
+            let mut location = PathBuf::new();
+            location.push(r.deploy_dir().unwrap());
+            location.push("files");
+
             apps.push(App {
                 id: r.name().unwrap().into(),
                 name: r.appdata_name().unwrap_or(r.name().unwrap()).into(),
-                location: r.deploy_dir().unwrap().into(),
+                location: location.into_os_string().into_string().unwrap(),
             });
         }
 
