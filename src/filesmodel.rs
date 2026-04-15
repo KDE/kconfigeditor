@@ -116,8 +116,14 @@ impl filesmodel::FilesModel {
         self.as_mut().begin_reset_model();
 
         let mut path = PathBuf::new();
-        path.push(&self.location.to_string());
-        path.push("files");
+
+        if self.location.is_empty() {
+            path.push("/usr");
+        } else {
+            path.push(&self.location.to_string());
+            path.push("files");
+        }
+
         path.push("share");
         path.push("config.kcfg");
 

@@ -80,6 +80,12 @@ impl Default for AppsModelRust {
     fn default() -> Self {
         let mut apps = vec![];
 
+        apps.push(App {
+            id: String::from("global"),
+                  name: String::from("Global"),
+                  location: String::default(),
+        });
+
         let cancellable = Cancellable::new();
 
         let installs = libflatpak::system_installations(Some(&cancellable)).unwrap();
