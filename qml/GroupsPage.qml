@@ -33,7 +33,7 @@ Kirigami.ScrollablePage {
             onClicked: pageStack.push(Qt.resolvedUrl("EntriesPage.qml"), {
                 location: location,
                 fileName: fileName,
-                groupName: name,
+                groupName: name
             })
         }
     }

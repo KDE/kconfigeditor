@@ -26,7 +26,6 @@ Kirigami.ScrollablePage {
             location: root.location
             fileName: root.fileName
             groupName: root.groupName
-
         }
 
         delegate: DelegateChooser {
@@ -42,7 +41,6 @@ Kirigami.ScrollablePage {
                     required property string label
                     required property bool value
                     required property bool defaultValue
-
 
                     width: ListView.view.width
 
