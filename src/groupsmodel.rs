@@ -3,11 +3,9 @@
 
 use cxx_qt_lib::QString;
 use groupsmodel::GroupsRoles;
-use std::path::Path;
 use std::path::PathBuf;
 use std::pin::Pin;
 
-use std::collections::HashSet;
 use std::fs;
 
 use crate::config;

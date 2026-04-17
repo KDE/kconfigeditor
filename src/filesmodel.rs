@@ -3,7 +3,6 @@
 
 use cxx_qt_lib::QString;
 use filesmodel::Roles;
-use std::path::Path;
 use std::path::PathBuf;
 use std::pin::Pin;
 

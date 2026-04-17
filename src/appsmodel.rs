@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
 use libflatpak::gio::Cancellable;
-use libflatpak::glib::GString;
 use libflatpak::prelude::{InstallationExt, InstalledRefExt, RefExt};
 use libflatpak::{Installation, RefKind};
 
@@ -129,7 +128,6 @@ impl Default for AppsModelRust {
 }
 
 use appsmodel::*;
-use cxx_qt::CxxQtType;
 
 impl appsmodel::AppsModel {
     fn row_count(&self, _parent: &QModelIndex) -> i32 {
