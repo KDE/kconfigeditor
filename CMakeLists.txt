@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: BSD-2-Clause
+# SPDX-FileCopyrightText: 2026 Nicolas Fella <nicolas.fella@gmx.de>
+
 cmake_minimum_required(VERSION 3.29)
 project(configeditor VERSION 0.1)
 
