@@ -2,9 +2,9 @@
 
 #include <QVariant>
 
-#include <QString>
 #include <KConfig>
 #include <KConfigGroup>
+#include <QString>
 
 template<typename T>
 QVariant typeToVariant(T type)
@@ -13,13 +13,15 @@ QVariant typeToVariant(T type)
 }
 
 template<typename T>
-T readEntry(const QString &file, const QString &group, const QString &key, T defaultValue) {
+T readEntry(const QString &file, const QString &group, const QString &key, T defaultValue)
+{
     KConfig c(file);
     return c.group(group).readEntry<T>(key, defaultValue);
 }
 
 template<typename T>
-T readEntry(const QString &file, const QString &group, const QString &key, const T &defaultValue) {
+T readEntry(const QString &file, const QString &group, const QString &key, const T &defaultValue)
+{
     KConfig c(file);
     return c.group(group).readEntry<T>(key, defaultValue);
 }
