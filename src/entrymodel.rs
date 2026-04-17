@@ -374,12 +374,13 @@ impl entrymodel::EntryModel {
                             &QString::from(key),
                             default_value.value_or_default(),
                         )),
-                        Type::Font => QVariant::from(&read_entry_font(
-                            &self.file_name,
-                            &self.group_name,
-                            &QString::from(key),
-                            default_value.value_or_default(),
-                        )),
+                        Type::Font => QVariant::default(),
+                        // Type::Font => QVariant::from(&read_entry_font(
+                        //     &self.file_name,
+                        //     &self.group_name,
+                        //     &QString::from(key),
+                        //     default_value.value_or_default(),
+                        // )),
                         Type::IntList => read_entry_int_list_as_variant(
                             &self.file_name,
                             &self.group_name,
@@ -503,7 +504,7 @@ impl entrymodel::EntryModel {
                         Type::UInt => Self::default_value::<u32>(entry),
                         Type::String => Self::default_value::<QString>(entry),
                         Type::Bool => Self::default_value::<bool>(entry),
-                        Type::Font => Self::default_value::<QFont>(entry),
+                        Type::Font => QVariant::default(), //Self::default_value::<QFont>(entry),
                         Type::IntList => QVariant::default(), // TODO
                         Type::StringList => Self::default_value::<QStringList>(entry),
                         Type::DateTime => Self::default_value::<QDateTime>(entry),
