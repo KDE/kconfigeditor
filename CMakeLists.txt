@@ -8,6 +8,10 @@ include(KDEInstallDirs)
 
 find_package(Corrosion REQUIRED)
 
+find_package(Qt6 REQUIRED COMPONENTS Core Quick QuickControls2)
+
+find_package(KF6 REQUIRED COMPONENTS Kirigami Config)
+
 corrosion_import_crate(MANIFEST_PATH Cargo.toml)
 
 corrosion_install(TARGETS configeditor ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
