@@ -80,7 +80,7 @@ impl Default for AppsModelRust {
         apps.push(App {
             id: String::from("global"),
             name: String::from("Global"),
-            location: String::from("/usr"),
+            location: String::default(),
         });
 
         let cancellable = Cancellable::new();

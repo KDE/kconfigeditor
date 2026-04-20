@@ -7,6 +7,7 @@ mod entrymodel;
 mod filesmodel;
 mod groupsmodel;
 mod qstandardpaths;
+mod util;
 
 use cxx_qt_lib::{QGuiApplication, QQmlApplicationEngine, QUrl};
 

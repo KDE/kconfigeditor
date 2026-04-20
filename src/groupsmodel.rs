@@ -1,7 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Nicolas Fella <nicolas.fella@gmx.de>
 // SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
-use cxx_qt_lib::QString;
+use cxx_qt::casting::Upcast;
+use cxx_qt_lib::{QList, QString, QStringList};
 use groupsmodel::GroupsRoles;
 use std::path::PathBuf;
 use std::pin::Pin;
@@ -10,6 +11,10 @@ use std::fs;
 
 use crate::config;
 use crate::config::{Group, Kcfg};
+use crate::qstandardpaths::{
+    QStandardPaths, QStandardPathsLocateOption, QStandardPathsStandardLocation,
+};
+use crate::util;
 
 #[cxx_qt::bridge]
 mod groupsmodel {
@@ -123,22 +128,11 @@ impl groupsmodel::GroupsModel {
     fn rebuild(mut self: Pin<&mut Self>) {
         self.as_mut().begin_reset_model();
 
-        let mut path = PathBuf::new();
-        path.push(&self.location.to_string());
-        path.push("share");
-        path.push("config.kcfg");
+        let kcfg_files = util::find_kcfg_files(&self.location);
 
-        let paths = match fs::read_dir(path) {
-            Ok(r) => r,
-            Err(e) => {
-                println!("error: {e:?}");
-                return {};
-            }
-        };
-
-        let configs: Vec<Kcfg> = paths
-            .into_iter()
-            .map(|path| config::parse(path.unwrap().path().to_str().unwrap()))
+        let configs: Vec<_> = Upcast::<QList<QString>>::upcast(&kcfg_files)
+            .iter()
+            .map(|path| config::parse(path.to_string().as_str()))
             .flatten()
             .filter(|config| config.kcfgfile.as_ref().is_some())
             .filter(|config| {
