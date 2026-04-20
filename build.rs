@@ -21,8 +21,10 @@ fn main() {
         "src/filesmodel.rs",
         "src/groupsmodel.rs",
         "src/entrymodel.rs",
+        "src/qstandardpaths.rs",
     ])
-    .cpp_file("src/helper.cpp");
+    .cpp_file("src/helper.cpp")
+    .cpp_file("src/qstandardpaths.cpp");
 
     builder = link_libraries(builder);
 
