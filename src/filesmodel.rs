@@ -137,6 +137,8 @@ impl filesmodel::FilesModel {
                 .collect::<Vec<_>>(),
         );
 
+        apps.sort();
+
         self.as_mut().rust_mut().apps = apps;
 
         self.end_reset_model();
