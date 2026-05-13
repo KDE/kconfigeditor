@@ -87,7 +87,8 @@ pub fn parse(path: &str) -> Option<Kcfg> {
     let result: Result<Kcfg, _> = serde_xml_rs::from_reader(reader);
 
     if result.is_err() {
-        println!("failed to parse {}", path);
+        eprintln!("failed to parse {path}: {:#?}", result.err());
+        return None;
     }
 
     Some(result.unwrap())
