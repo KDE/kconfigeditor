@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-License-Identifier: CC0-1.0
+  SPDX-FileCopyrightText: 2026 Nicolas Fella <nicolas.fella@gmx.de>
+-->
+<component type="desktop">
+  <id>org.kde.configeditor.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-2.0+</project_license>
+  <launchable type="desktop-id">org.kde.configeditor.desktop</launchable>
+  <name>KConfigEditor</name>
+  <summary>Configuration Editor</summary>
+  <developer id="org.kde">
+    <name>KDE</name>
+    <url>https://kde.org</url>
+  </developer>
+  <description>
+    <p>A graphical editor for configuration files</p>
+  </description>
+  <url type="homepage">https://minuet.kde.org</url>
+  <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?product=kconfigeditor</url>
+  <url type="donation">https://www.kde.org/community/donations/?app=kconfigeditor&amp;source=appdata</url>
+  <url type="vcs-browser">https://invent.kde.org/system/kconfigeditor</url>
+  <categories>
+    <category>Qt</category>
+    <category>KDE</category>
+    <category>System</category>
+  </categories>
+  <project_group>KDE</project_group>
+  <provides>
+    <binary>configeditor</binary>
+  </provides>
+</component>

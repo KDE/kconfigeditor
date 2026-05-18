@@ -4,7 +4,6 @@
     "runtime": "org.kde.Platform",
     "runtime-version": "6.10",
     "sdk": "org.kde.Sdk",
-    "rename-icon": "configure",
     "sdk-extensions": [
         "org.freedesktop.Sdk.Extension.rust-stable"
     ],

@@ -23,6 +23,7 @@ corrosion_install(TARGETS configeditor ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES org.kde.configeditor.desktop DESTINATION ${KDE_INSTALL_APPDIR})
 install(FILES org.kde.configeditor.svg DESTINATION ${KDE_INSTALL_FULL_ICONDIR}/hicolor/scalable/apps)
+install(FILES org.kde.configeditor.metainfo.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
 
 file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES *.cpp *.h)
 kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})
