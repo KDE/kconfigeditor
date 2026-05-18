@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.29)
 project(configeditor VERSION 0.1)
 
-find_package(ECM 6.25.0 REQUIRED)
+find_package(ECM 6.24.0 REQUIRED)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 include(KDEInstallDirs)

@@ -1,0 +1,47 @@
+From 18239163deb5287869098ad867bfa995d7670206 Mon Sep 17 00:00:00 2001
+From: Nicolas Fella <nicolas.fella@gmx.de>
+Date: Mon, 18 May 2026 17:00:17 +0200
+Subject: [PATCH] Patch out running brwap during the build
+
+---
+ meson.build | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index eb3ffe81..5c54bb42 100644
+--- a/meson.build
++++ b/meson.build
+@@ -269,18 +269,18 @@ foreach system_executable : [
+   if value != ''
+     version = ''
+ 
+-    if can_run_host_binaries
+-      result = run_command(
+-        value, '--version',
+-        capture : true,
+-        check : true,
+-      )
+-      output = result.stdout()
+-
+-      if output.startswith(name + ' ')
+-        version = output.split()[1]
+-      endif
+-    endif
++#     if can_run_host_binaries
++#       result = run_command(
++#         value, '--version',
++#         capture : true,
++#         check : true,
++#       )
++#       output = result.stdout()
++#
++#       if output.startswith(name + ' ')
++#         version = output.split()[1]
++#       endif
++#     endif
+ 
+     if version == ''
+       # Cross-compiling, or unable to parse --version output
+-- 
+2.54.0
+
