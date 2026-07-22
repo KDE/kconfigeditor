@@ -12,6 +12,20 @@ use crate::qstandardpaths::{
     QStandardPaths, QStandardPathsLocateOption, QStandardPathsStandardLocation,
 };
 
+#[cxx_qt::bridge()]
+mod ffi {
+    unsafe extern "C++" {
+        include!("KFileUtils");
+
+        include!("cxx-qt-lib/qstringlist.h");
+        type QStringList = cxx_qt_lib::QStringList;
+
+        #[namespace = "KFileUtils"]
+        #[rust_name = "find_all_unique_files"]
+        pub fn findAllUniqueFiles(dirs: &QStringList, nameFilters: &QStringList) -> QStringList;
+    }
+}
+
 fn kcfg_dirs(location: &QString) -> QStringList {
     if location.is_empty() {
         return QStandardPaths::locate_all(
@@ -29,27 +43,13 @@ fn kcfg_dirs(location: &QString) -> QStringList {
     }
 }
 
+use ffi::find_all_unique_files;
+
 pub fn find_kcfg_files(location: &QString) -> QStringList {
-    let mut result = QStringList::default();
+    let mut patterns = QStringList::default();
+    patterns.append(QString::from("*.kcfg"));
 
     let dirs = kcfg_dirs(location);
 
-    for dir in Upcast::<QList<QString>>::upcast(&dirs) {
-        let r = fs::read_dir(dir.to_string());
-        if r.is_err() {
-            println!("error: {:?}", r.err().unwrap());
-            continue;
-        }
-
-        let listing = r.unwrap();
-
-        for file in listing {
-            let name: String = file.unwrap().path().to_str().unwrap().to_string();
-            result.append(QString::from(&name));
-        }
-    }
-
-    result.remove_duplicates();
-
-    result
+    return find_all_unique_files(&dirs, &patterns);
 }

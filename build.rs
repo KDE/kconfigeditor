@@ -5,7 +5,10 @@ use cmake_package::find_package;
 use cxx_qt_build::{CxxQtBuilder, QmlModule};
 
 // list of (LibraryName, [LibraryTargets])
-const LIBRARIES: &[(&str, &[&str])] = &[("KF6Config", &["KF6::ConfigCore"])];
+const LIBRARIES: &[(&str, &[&str])] = &[
+    ("KF6Config", &["KF6::ConfigCore"]),
+    ("KF6CoreAddons", &["KF6::CoreAddons"]),
+];
 
 fn main() {
     let mut builder = CxxQtBuilder::new_qml_module(
@@ -22,6 +25,7 @@ fn main() {
         "src/groupsmodel.rs",
         "src/entrymodel.rs",
         "src/qstandardpaths.rs",
+        "src/util.rs",
     ])
     .cpp_file("src/helper.cpp")
     .cpp_file("src/qstandardpaths.cpp");
