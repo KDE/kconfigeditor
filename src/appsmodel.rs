@@ -97,9 +97,11 @@ impl Default for AppsModelRust {
                 location.push(r.deploy_dir().unwrap());
                 location.push("files");
 
+                let name: String = r.appdata_name().or(r.name()).unwrap().into();
+
                 apps.push(App {
                     id: r.name().unwrap().into(),
-                    name: r.appdata_name().unwrap().into(),
+                    name: name,
                     location: location.into_os_string().into_string().unwrap(),
                 });
             }
