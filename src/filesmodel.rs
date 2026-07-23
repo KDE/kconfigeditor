@@ -120,17 +120,14 @@ impl filesmodel::FilesModel {
 
         let configs: Vec<_> = Upcast::<QList<QString>>::upcast(&kcfg_files)
             .iter()
-            .map(|path| config::parse(path.to_string().as_str()))
-            .flatten()
+            .flat_map(|path| config::parse(path.to_string().as_str()))
             .collect();
 
         apps.extend(
             configs
                 .iter()
-                .map(|kcfg| kcfg.kcfgfile.clone())
-                .flatten()
-                .map(|file| file.name)
-                .flatten()
+                .flat_map(|kcfg| kcfg.kcfgfile.clone())
+                .flat_map(|file| file.name)
                 .collect::<HashSet<_>>()
                 .iter()
                 .map(|s| QString::from(s))

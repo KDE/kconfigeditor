@@ -566,8 +566,7 @@ impl entrymodel::EntryModel {
 
         let configs: Vec<_> = Upcast::<QList<QString>>::upcast(&kcfg_files)
             .iter()
-            .map(|path| config::parse(&path.to_string().as_str()))
-            .flatten()
+            .flat_map(|path| config::parse(&path.to_string().as_str()))
             .filter(|config| config.kcfgfile.as_ref().is_some())
             .filter(|config| {
                 config
