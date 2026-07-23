@@ -288,6 +288,19 @@
     {
         "type": "archive",
         "archive-type": "tar-gzip",
+        "url": "https://static.crates.io/crates/cxx-qt-lib-extras/cxx-qt-lib-extras-0.9.1.crate",
+        "sha256": "caecf40d614ac4cc448ac6baf462bf4c0d1d70c5a48d6b790e9e735c8d39ef97",
+        "dest": "cargo/vendor/cxx-qt-lib-extras-0.9.1"
+    },
+    {
+        "type": "inline",
+        "contents": "{\"package\": \"caecf40d614ac4cc448ac6baf462bf4c0d1d70c5a48d6b790e9e735c8d39ef97\", \"files\": {}}",
+        "dest": "cargo/vendor/cxx-qt-lib-extras-0.9.1",
+        "dest-filename": ".cargo-checksum.json"
+    },
+    {
+        "type": "archive",
+        "archive-type": "tar-gzip",
         "url": "https://static.crates.io/crates/cxx-qt-macro/cxx-qt-macro-0.9.1.crate",
         "sha256": "bb44925fc99e07859ee49bdc89ea519bb2052016154ffa4f4898c0cb4d86c81e",
         "dest": "cargo/vendor/cxx-qt-macro-0.9.1"
