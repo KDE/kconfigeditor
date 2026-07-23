@@ -7,6 +7,7 @@ use groupsmodel::GroupsRoles;
 use std::path::PathBuf;
 use std::pin::Pin;
 
+use std::collections::HashSet;
 use std::fs;
 
 use crate::config;
@@ -82,7 +83,7 @@ mod groupsmodel {
 }
 
 pub struct GroupsModelRust {
-    groups: Vec<Group>,
+    groups: Vec<QString>,
     file_name: QString,
     location: QString,
 }
@@ -111,7 +112,7 @@ impl groupsmodel::GroupsModel {
         if let Some(group) = self.groups.get(index.row() as usize) {
             match role {
                 GroupsRoles::Name => {
-                    return QVariant::from(&QString::from(&group.name));
+                    return QVariant::from(group);
                 }
                 _ => {}
             }
@@ -146,12 +147,18 @@ impl groupsmodel::GroupsModel {
             })
             .collect();
 
-        self.as_mut().rust_mut().groups = configs
+        let groups: Vec<Group> = configs
             .iter()
             .flat_map(|config| config.group.clone())
             .collect();
 
-        // TODO merge duplicate groups
+        self.as_mut().rust_mut().groups = groups
+            .iter()
+            .map(|group| group.name.clone())
+            .collect::<HashSet<_>>()
+            .iter()
+            .map(|s| QString::from(s))
+            .collect();
 
         self.end_reset_model();
     }
