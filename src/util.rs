@@ -3,13 +3,15 @@
 
 use std::path::PathBuf;
 
+use crate::KConfig;
 use cxx_qt::casting::Upcast;
 use cxx_qt_lib::{QList, QString, QStringList};
 
 use std::fs;
 
-use crate::qstandardpaths::{
-    QStandardPaths, QStandardPathsLocateOption, QStandardPathsStandardLocation,
+use crate::{
+    kconfig::OpenFlags,
+    qstandardpaths::{QStandardPaths, QStandardPathsLocateOption, QStandardPathsStandardLocation},
 };
 
 #[cxx_qt::bridge()]
@@ -23,6 +25,9 @@ mod ffi {
         #[namespace = "KFileUtils"]
         #[rust_name = "find_all_unique_files"]
         pub fn findAllUniqueFiles(dirs: &QStringList, nameFilters: &QStringList) -> QStringList;
+
+        include!("cxx-qt-lib/qstring.h");
+        type QString = cxx_qt_lib::QString;
     }
 }
 

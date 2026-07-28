@@ -26,9 +26,13 @@ fn main() {
         "src/entrymodel.rs",
         "src/qstandardpaths.rs",
         "src/util.rs",
+        "src/kconfig.rs",
+        "src/kconfiggroup.rs",
     ])
     .cpp_file("src/helper.cpp")
-    .cpp_file("src/qstandardpaths.cpp");
+    .cpp_file("src/qstandardpaths.cpp")
+    .cpp_file("src/kconfig.cpp")
+    .cpp_file("src/kconfiggroup.cpp");
 
     builder = link_libraries(builder);
 

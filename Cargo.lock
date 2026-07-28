@@ -132,6 +132,7 @@ dependencies = [
 name = "configeditor"
 version = "0.1.0"
 dependencies = [
+ "bitflags",
  "cmake-package",
  "cxx",
  "cxx-qt",
