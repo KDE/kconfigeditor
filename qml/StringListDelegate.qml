@@ -10,7 +10,7 @@ BaseDelegate {
     required property list<string> value
     required property list<string> defaultValue
 
-    visible: stringListText.text !== stringListDelegate.defaultValue
+    isDefault: stringListText.text !== stringListDelegate.defaultValue
 
     innerItem: TextField {
         id: stringListText
