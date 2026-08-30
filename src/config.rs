@@ -31,6 +31,22 @@ pub struct Group {
 }
 
 #[derive(Debug, Deserialize, Clone)]
+#[serde(rename = "choice")]
+pub struct Choice {
+    #[serde(rename = "@name")]
+    pub name: String,
+    pub label: Option<String>,
+}
+
+#[derive(Debug, Deserialize, Clone, Default)]
+#[serde(rename = "choices")]
+pub struct Choices {
+    #[serde(rename = "@name")]
+    pub name: Option<String>,
+    pub choice: Option<Vec<Choice>>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename = "entry")]
 pub struct Entry {
     #[serde(rename = "@name")]
@@ -41,6 +57,7 @@ pub struct Entry {
     pub default: Option<Vec<Default>>,
     #[serde(rename = "@key")]
     pub key: Option<String>,
+    pub choices: Option<Choices>,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Clone)]

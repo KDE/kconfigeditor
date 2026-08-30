@@ -490,6 +490,21 @@ impl entrymodel::EntryModel {
                         entry.label.clone().unwrap_or_default().label(),
                     ));
                 }
+                EntryRoles::Choices => {
+                    let choices = entry
+                        .choices
+                        .clone()
+                        .unwrap_or_default()
+                        .choice
+                        .unwrap_or_default();
+
+                    let names = choices
+                        .iter()
+                        .map(|choice| QString::from(&choice.name))
+                        .collect::<QStringList>();
+
+                    return QVariant::from(&names);
+                }
                 EntryRoles::DefaultValue => {
                     let key = entry
                         .key
@@ -556,6 +571,7 @@ impl entrymodel::EntryModel {
         hash.insert(EntryRoles::Value.repr, "value".into());
         hash.insert(EntryRoles::Label.repr, "label".into());
         hash.insert(EntryRoles::DefaultValue.repr, "defaultValue".into());
+        hash.insert(EntryRoles::Choices.repr, "choices".into());
         hash
     }
 
