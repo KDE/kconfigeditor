@@ -506,16 +506,6 @@ impl entrymodel::EntryModel {
                     return QVariant::from(&names);
                 }
                 EntryRoles::DefaultValue => {
-                    let key = entry
-                        .key
-                        .clone()
-                        .unwrap_or(entry.name.clone().unwrap_or_default());
-
-                    let default_value = match &entry.default {
-                        None => QVariant::default(),
-                        Some(defs) => QVariant::from(&QString::from(&defs[0].0.clone())),
-                    };
-
                     return match entry.the_type {
                         Type::Int => Self::default_value::<i32>(entry),
                         Type::UInt => Self::default_value::<u32>(entry),
