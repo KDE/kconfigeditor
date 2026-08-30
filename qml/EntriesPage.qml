@@ -120,6 +120,94 @@ Kirigami.ScrollablePage {
             }
 
             DelegateChoice {
+                roleValue: EntryModel.Color
+
+                ItemDelegate {
+                    id: colorDelegate
+
+                    required property string name
+                    required property string label
+                    required property string value
+                    required property string defaultValue
+
+                    width: ListView.view.width
+
+                    contentItem: RowLayout {
+                        Kirigami.TitleSubtitle {
+                            title: colorDelegate.name
+                            subtitle: colorDelegate.label
+                            Layout.fillWidth: true
+                        }
+
+                        Rectangle {
+                            color: "orange"
+                            implicitHeight: 10
+                            implicitWidth: 10
+                            radius: 5
+                            visible: colorTextField.text !== colorDelegate.defaultValue
+                        }
+
+                        TextField {
+                            id: colorTextField
+
+                            text: colorDelegate.value
+                        }
+
+                        Button {
+                            icon.name: "edit-undo"
+                            display: Button.IconOnly
+                            text: "Revert to default"
+                            enabled: colorTextField.text !== colorDelegate.defaultValue
+                        }
+                    }
+                }
+            }
+
+            DelegateChoice {
+                roleValue: EntryModel.Font
+
+                ItemDelegate {
+                    id: fontDelegate
+
+                    required property string name
+                    required property string label
+                    required property string value
+                    required property string defaultValue
+
+                    width: ListView.view.width
+
+                    contentItem: RowLayout {
+                        Kirigami.TitleSubtitle {
+                            title: fontDelegate.name
+                            subtitle: fontDelegate.label
+                            Layout.fillWidth: true
+                        }
+
+                        Rectangle {
+                            color: "orange"
+                            implicitHeight: 10
+                            implicitWidth: 10
+                            radius: 5
+                            visible: fontTextField.text !== fontDelegate.defaultValue
+                        }
+
+                        TextField {
+                            id: fontTextField
+
+                            text: fontDelegate.value
+                        }
+
+                        Button {
+                            icon.name: "edit-undo"
+                            display: Button.IconOnly
+                            text: "Revert to default"
+                            enabled: fontTextField.text !== fontDelegate.defaultValue
+                        }
+                    }
+                }
+            }
+
+            DelegateChoice {
                 roleValue: EntryModel.Int
 
                 ItemDelegate {
