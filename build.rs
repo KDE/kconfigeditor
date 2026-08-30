@@ -18,6 +18,7 @@ fn main() {
             .qml_file("qml/FilesPage.qml")
             .qml_file("qml/GroupsPage.qml")
             .qml_file("qml/EntriesPage.qml")
+            .qml_file("qml/BaseDelegate.qml")
             .qml_file("qml/BoolDelegate.qml")
             .qml_file("qml/StringDelegate.qml")
             .qml_file("qml/ColorDelegate.qml")
