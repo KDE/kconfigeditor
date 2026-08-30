@@ -17,7 +17,14 @@ fn main() {
             .qml_file("qml/AppsPage.qml")
             .qml_file("qml/FilesPage.qml")
             .qml_file("qml/GroupsPage.qml")
-            .qml_file("qml/EntriesPage.qml"),
+            .qml_file("qml/EntriesPage.qml")
+            .qml_file("qml/BoolDelegate.qml")
+            .qml_file("qml/StringDelegate.qml")
+            .qml_file("qml/ColorDelegate.qml")
+            .qml_file("qml/FontDelegate.qml")
+            .qml_file("qml/StringListDelegate.qml")
+            .qml_file("qml/IntDelegate.qml")
+            .qml_file("qml/EnumDelegate.qml"),
     )
     .files([
         "src/appsmodel.rs",
