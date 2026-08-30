@@ -2,7 +2,9 @@
 // SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
 import QtQuick
+import QtQuick.Layouts
 import QtQuick.Controls
+import org.kde.kquickcontrols
 
 BaseDelegate {
     id: colorDelegate
@@ -12,9 +14,15 @@ BaseDelegate {
 
     isDefault: colorTextField.text !== colorDelegate.defaultValue
 
-    innerItem: TextField {
-        id: colorTextField
+    innerItem: RowLayout {
+        ColorButton {
+            color: Qt.color(colorDelegate.value)
+        }
 
-        text: colorDelegate.value
+        TextField {
+            id: colorTextField
+
+            text: colorDelegate.value
+        }
     }
 }

@@ -10,12 +10,15 @@ set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 include(KDEInstallDirs)
 include(KDEClangFormat)
 include(KDEGitCommitHooks)
+include(ECMFindQmlModule)
 
 find_package(Corrosion REQUIRED)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Quick QuickControls2)
 
 find_package(KF6 REQUIRED COMPONENTS Kirigami Config)
+
+ecm_find_qmlmodule(org.kde.kquickcontrols)
 
 corrosion_import_crate(MANIFEST_PATH Cargo.toml)
 
