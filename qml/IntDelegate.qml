@@ -10,6 +10,9 @@ BaseDelegate {
     required property int value
     required property int defaultValue
 
+    required property int min
+    required property int max
+
     isDefault: spinBox.value === intDelegate.defaultValue
 
     innerItem: SpinBox {

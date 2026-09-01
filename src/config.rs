@@ -58,6 +58,8 @@ pub struct Entry {
     #[serde(rename = "@key")]
     pub key: Option<String>,
     pub choices: Option<Choices>,
+    pub min: Option<Min>,
+    pub max: Option<Max>,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Clone)]
@@ -96,6 +98,14 @@ pub struct Label(String);
 #[derive(Debug, Deserialize, PartialEq, Clone)]
 #[serde(rename = "default")]
 pub struct Default(pub String);
+
+#[derive(Debug, Deserialize, PartialEq, Clone)]
+#[serde(rename = "min")]
+pub struct Min(pub String);
+
+#[derive(Debug, Deserialize, PartialEq, Clone)]
+#[serde(rename = "max")]
+pub struct Max(pub String);
 
 pub fn parse(path: &str) -> Option<Kcfg> {
     let file = File::open(path).unwrap();

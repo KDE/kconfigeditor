@@ -534,6 +534,30 @@ impl entrymodel::EntryModel {
                         Type::UrlList => QVariant::default(), //Self::default_value::<QList<QUrl>>(entry),
                     };
                 }
+                EntryRoles::Min => {
+                    if entry.the_type == Type::Int {
+                        if let Some(min) = &entry.min {
+                            let foo = min.0.parse::<i32>().unwrap();
+                            return QVariant::from(&foo);
+                        }
+
+                        return QVariant::from(&-2147483648);
+                    }
+
+                    return QVariant::default();
+                }
+                EntryRoles::Max => {
+                    if entry.the_type == Type::Int {
+                        if let Some(max) = &entry.max {
+                            let foo = max.0.parse::<i32>().unwrap();
+                            return QVariant::from(&foo);
+                        }
+
+                        return QVariant::from(&2147483647);
+                    }
+
+                    return QVariant::default();
+                }
                 _ => {}
             }
         }
@@ -562,6 +586,8 @@ impl entrymodel::EntryModel {
         hash.insert(EntryRoles::Label.repr, "label".into());
         hash.insert(EntryRoles::DefaultValue.repr, "defaultValue".into());
         hash.insert(EntryRoles::Choices.repr, "choices".into());
+        hash.insert(EntryRoles::Min.repr, "min".into());
+        hash.insert(EntryRoles::Max.repr, "max".into());
         hash
     }
 
