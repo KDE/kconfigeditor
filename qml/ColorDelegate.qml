@@ -12,7 +12,7 @@ BaseDelegate {
     required property string value
     required property string defaultValue
 
-    isDefault: colorTextField.text !== colorDelegate.defaultValue
+    isDefault: colorTextField.text === colorDelegate.defaultValue
 
     innerItem: RowLayout {
         ColorButton {
