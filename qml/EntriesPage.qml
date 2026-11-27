@@ -82,7 +82,7 @@ Kirigami.ScrollablePage {
             DelegateChoice {
                 roleValue: EntryModel.Url
 
-                TodoDelegate {}
+                StringDelegate {}
             }
 
             DelegateChoice {
@@ -106,7 +106,7 @@ Kirigami.ScrollablePage {
             DelegateChoice {
                 roleValue: EntryModel.Path
 
-                TodoDelegate {}
+                StringDelegate {}
             }
 
             DelegateChoice {
