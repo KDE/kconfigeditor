@@ -1,5 +1,11 @@
 [
     {
+        "type": "git",
+        "url": "https://invent.kde.org/libraries/cxx-kde-frameworks",
+        "commit": "c7f67bef96562385368544b54c4639cef9fa88b3",
+        "dest": "flatpak-cargo/git/cxx-kde-frameworks-c7f67be"
+    },
+    {
         "type": "archive",
         "archive-type": "tar-gzip",
         "url": "https://static.crates.io/crates/aho-corasick/aho-corasick-1.1.5.crate",
@@ -231,6 +237,24 @@
         "type": "inline",
         "contents": "{\"package\": \"157db3fc21feec4fc9917861635d04fd7a3c4ae9ee3957bb0dc2a96b678e7b87\", \"files\": {}}",
         "dest": "cargo/vendor/cxx-gen-0.7.205",
+        "dest-filename": ".cargo-checksum.json"
+    },
+    {
+        "type": "shell",
+        "commands": [
+            "cp -r --reflink=auto \"flatpak-cargo/git/cxx-kde-frameworks-c7f67be/cxx-kde-frameworks\" \"cargo/vendor/cxx-kde-frameworks\""
+        ]
+    },
+    {
+        "type": "inline",
+        "contents": "[package]\nname = \"cxx-kde-frameworks\"\nversion = \"0.1.0\"\nedition = \"2024\"\nlinks = \"cxx-kde-frameworks\"\n\n[dependencies]\ncxx = \"1.0.192\"\ncxx-qt = \"0.10.0\"\n\n[dependencies.cxx-qt-lib]\nversion = \"0.10.0\"\nfeatures = [\"qt_gui\", \"qt_qml\", \"qt_quickcontrols\"]\n\n[dependencies.cxx-qt-lib-extras]\nversion = \"0.10.0\"\n\n[build-dependencies]\ncmake-package = \"0.3.1\"\n\n[build-dependencies.cxx-qt-build]\nversion = \"0.10.0\"\n",
+        "dest": "cargo/vendor/cxx-kde-frameworks",
+        "dest-filename": "Cargo.toml"
+    },
+    {
+        "type": "inline",
+        "contents": "{\"package\": null, \"files\": {}}",
+        "dest": "cargo/vendor/cxx-kde-frameworks",
         "dest-filename": ".cargo-checksum.json"
     },
     {
@@ -1574,7 +1598,7 @@
     },
     {
         "type": "inline",
-        "contents": "[source.vendored-sources]\ndirectory = \"cargo/vendor\"\n\n[source.crates-io]\nreplace-with = \"vendored-sources\"\n",
+        "contents": "[source.vendored-sources]\ndirectory = \"cargo/vendor\"\n\n[source.crates-io]\nreplace-with = \"vendored-sources\"\n\n[source.\"https://invent.kde.org/libraries/cxx-kde-frameworks\"]\ngit = \"https://invent.kde.org/libraries/cxx-kde-frameworks\"\nreplace-with = \"vendored-sources\"\n",
         "dest": "cargo",
         "dest-filename": "config"
     }

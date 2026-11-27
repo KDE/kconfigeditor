@@ -13,8 +13,9 @@ mod util;
 
 use std::fs;
 
+use cxx_kde_frameworks::ki18n::KLocalizedString;
 use cxx_qt_lib::{
-    CaseSensitivity, QGuiApplication, QQmlApplicationEngine, QString, QStringList, QUrl,
+    CaseSensitivity, QByteArray, QGuiApplication, QQmlApplicationEngine, QString, QStringList, QUrl,
 };
 use cxx_qt_lib_extras::{QCommandLineOption, QCommandLineParser};
 
@@ -23,6 +24,8 @@ use crate::config::Kcfg;
 use crate::kconfig::KConfig;
 use crate::kconfig::OpenFlags;
 use crate::kconfiggroup::KConfigGroup;
+
+use cxx_kde_frameworks::ki18n;
 
 fn groups_for_file(schemas: &Vec<Kcfg>, file_name: &str) -> Vec<Group> {
     schemas
@@ -155,6 +158,8 @@ fn main() {
     }
 
     let mut app = QGuiApplication::new();
+
+    KLocalizedString::set_application_domain(&QByteArray::from("kconfigeditor"));
 
     parser.process(&args);
 

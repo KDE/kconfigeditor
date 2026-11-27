@@ -29,7 +29,5 @@ void doSelfTest()
 
 void setupI18n(QQmlApplicationEngine *engine)
 {
-    KLocalizedString::setApplicationDomain("kconfigeditor");
-
     KLocalization::setupLocalizedContext(engine);
 }

@@ -134,6 +134,7 @@ dependencies = [
  "bitflags",
  "cmake-package",
  "cxx",
+ "cxx-kde-frameworks",
  "cxx-qt",
  "cxx-qt-build",
  "cxx-qt-lib",
@@ -195,6 +196,19 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 3.0.10",
+]
+
+[[package]]
+name = "cxx-kde-frameworks"
+version = "0.1.0"
+source = "git+https://invent.kde.org/libraries/cxx-kde-frameworks/#c7f67bef96562385368544b54c4639cef9fa88b3"
+dependencies = [
+ "cmake-package",
+ "cxx",
+ "cxx-qt",
+ "cxx-qt-build",
+ "cxx-qt-lib",
+ "cxx-qt-lib-extras",
 ]
 
 [[package]]
