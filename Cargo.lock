@@ -94,12 +94,11 @@ checksum = "e0921b3876b3a1df8a1c9f912e7f94342458022c2e84288015893d83c4d62a79"
 
 [[package]]
 name = "cmake-package"
-version = "0.1.15"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ee270e2c8f3518a345df5ec8c30c3e544bd1f149b5c97dc16a697495ce1d164c"
+checksum = "446535eb8d305ce261a07933b7bda1a0676e0a3a66117b75c5170a16c344a816"
 dependencies = [
  "itertools",
- "once_cell",
  "regex",
  "serde",
  "serde_json",
@@ -626,9 +625,9 @@ dependencies = [
 
 [[package]]
 name = "itertools"
-version = "0.14.0"
+version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2b192c782037fadd9cfa75548310488aabdbf3d2da73885b31bd0abd03351285"
+checksum = "8b4baf93f58d4425749ca49a51c50ebab072c5df6994d08fed93541c331481dc"
 dependencies = [
  "either",
 ]

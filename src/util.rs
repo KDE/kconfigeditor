@@ -5,7 +5,7 @@ use std::path::PathBuf;
 
 use crate::KConfig;
 use cxx_qt::casting::Upcast;
-use cxx_qt_lib::{QList, QString, QStringList};
+use cxx_qt_lib::{QList, QQmlApplicationEngine, QString, QStringList};
 
 use std::fs;
 
@@ -22,6 +22,9 @@ mod ffi {
         include!("cxx-qt-lib/qstringlist.h");
         type QStringList = cxx_qt_lib::QStringList;
 
+        include!("cxx-qt-lib/qqmlapplicationengine.h");
+        type QQmlApplicationEngine = cxx_qt_lib::QQmlApplicationEngine;
+
         #[namespace = "KFileUtils"]
         #[rust_name = "find_all_unique_files"]
         pub fn findAllUniqueFiles(dirs: &QStringList, nameFilters: &QStringList) -> QStringList;
@@ -32,6 +35,9 @@ mod ffi {
         include!("helper.h");
         #[rust_name = "self_test"]
         pub fn doSelfTest();
+
+        #[rust_name = "setup_i18n"]
+        pub unsafe fn setupI18n(engine: *mut QQmlApplicationEngine);
 
     }
 }
@@ -55,6 +61,7 @@ fn kcfg_dirs(location: &QString) -> QStringList {
 
 use ffi::find_all_unique_files;
 pub use ffi::self_test;
+pub use ffi::setup_i18n;
 
 pub fn find_kcfg_files(location: &QString) -> QStringList {
     let mut patterns = QStringList::default();

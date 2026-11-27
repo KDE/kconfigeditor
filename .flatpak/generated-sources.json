@@ -145,14 +145,14 @@
     {
         "type": "archive",
         "archive-type": "tar-gzip",
-        "url": "https://static.crates.io/crates/cmake-package/cmake-package-0.1.15.crate",
-        "sha256": "ee270e2c8f3518a345df5ec8c30c3e544bd1f149b5c97dc16a697495ce1d164c",
-        "dest": "cargo/vendor/cmake-package-0.1.15"
+        "url": "https://static.crates.io/crates/cmake-package/cmake-package-0.3.1.crate",
+        "sha256": "446535eb8d305ce261a07933b7bda1a0676e0a3a66117b75c5170a16c344a816",
+        "dest": "cargo/vendor/cmake-package-0.3.1"
     },
     {
         "type": "inline",
-        "contents": "{\"package\": \"ee270e2c8f3518a345df5ec8c30c3e544bd1f149b5c97dc16a697495ce1d164c\", \"files\": {}}",
-        "dest": "cargo/vendor/cmake-package-0.1.15",
+        "contents": "{\"package\": \"446535eb8d305ce261a07933b7bda1a0676e0a3a66117b75c5170a16c344a816\", \"files\": {}}",
+        "dest": "cargo/vendor/cmake-package-0.3.1",
         "dest-filename": ".cargo-checksum.json"
     },
     {
@@ -743,14 +743,14 @@
     {
         "type": "archive",
         "archive-type": "tar-gzip",
-        "url": "https://static.crates.io/crates/itertools/itertools-0.14.0.crate",
-        "sha256": "2b192c782037fadd9cfa75548310488aabdbf3d2da73885b31bd0abd03351285",
-        "dest": "cargo/vendor/itertools-0.14.0"
+        "url": "https://static.crates.io/crates/itertools/itertools-0.15.0.crate",
+        "sha256": "8b4baf93f58d4425749ca49a51c50ebab072c5df6994d08fed93541c331481dc",
+        "dest": "cargo/vendor/itertools-0.15.0"
     },
     {
         "type": "inline",
-        "contents": "{\"package\": \"2b192c782037fadd9cfa75548310488aabdbf3d2da73885b31bd0abd03351285\", \"files\": {}}",
-        "dest": "cargo/vendor/itertools-0.14.0",
+        "contents": "{\"package\": \"8b4baf93f58d4425749ca49a51c50ebab072c5df6994d08fed93541c331481dc\", \"files\": {}}",
+        "dest": "cargo/vendor/itertools-0.15.0",
         "dest-filename": ".cargo-checksum.json"
     },
     {

@@ -178,6 +178,10 @@ fn main() {
     } else {
         let mut engine = QQmlApplicationEngine::new();
 
+        unsafe {
+            util::setup_i18n(engine.as_mut_ptr());
+        }
+
         if let Some(engine) = engine.as_mut() {
             engine.load(&QUrl::from("qrc:/qt/qml/org/kde/configeditor/qml/main.qml"));
         }

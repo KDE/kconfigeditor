@@ -5,6 +5,7 @@ import QtQuick
 import QtQuick.Controls
 
 import org.kde.kirigami as Kirigami
+import org.kde.ki18n
 
 import org.kde.configeditor
 
@@ -14,7 +15,7 @@ Kirigami.ScrollablePage {
     required property string appId
     required property string location
 
-    title: "Files"
+    title: KI18n.i18n("Files")
 
     ListView {
         anchors.fill: parent

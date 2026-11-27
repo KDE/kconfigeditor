@@ -10,6 +10,8 @@ use cxx_qt_build::{CxxQtBuilder, QmlModule};
 const LIBRARIES: &[(&str, &[&str])] = &[
     ("KF6Config", &["KF6::ConfigCore"]),
     ("KF6CoreAddons", &["KF6::CoreAddons"]),
+    ("KF6I18n", &["KF6::I18n", "KF6::I18nQml"]),
+    ("Qt6Qml", &["Qt6::Qml"]),
 ];
 
 fn main() {

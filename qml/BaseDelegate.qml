@@ -6,6 +6,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 
 import org.kde.kirigami as Kirigami
+import org.kde.ki18n
 
 ItemDelegate {
     id: root
@@ -50,7 +51,7 @@ ItemDelegate {
         Button {
             icon.name: "edit-undo"
             display: Button.IconOnly
-            text: "Revert to default"
+            text: KI18n.i18n("Revert to default")
             enabled: !root.isDefault
             onClicked: root.revertToDefault()
         }

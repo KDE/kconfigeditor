@@ -16,9 +16,10 @@ find_package(Corrosion REQUIRED)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Quick QuickControls2)
 
-find_package(KF6 REQUIRED COMPONENTS Kirigami Config)
+find_package(KF6 REQUIRED COMPONENTS Kirigami Config I18n)
 
 ecm_find_qmlmodule(org.kde.kquickcontrols)
+ecm_find_qmlmodule(org.kde.ki18n)
 
 if ("address" IN_LIST ECM_ENABLE_SANITIZERS)
     set(ENV{KCONFIGEDITOR_ENABLE_ASAN} 1)
@@ -27,6 +28,8 @@ endif()
 corrosion_import_crate(MANIFEST_PATH Cargo.toml)
 
 corrosion_install(TARGETS configeditor ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
+
+ki18n_install(po)
 
 install(FILES org.kde.configeditor.desktop DESTINATION ${KDE_INSTALL_APPDIR})
 install(FILES org.kde.configeditor.svg DESTINATION ${KDE_INSTALL_FULL_ICONDIR}/hicolor/scalable/apps)

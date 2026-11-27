@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <QQmlApplicationEngine>
 #include <QVariant>
 
 #include <KConfig>
@@ -32,3 +33,5 @@ T readEntry(const QString &file, const QString &group, const QString &key, const
 QVariant readIntListEntryAsVariant(const QString &file, const QString &group, const QString &key, const QString &defaultValueString);
 
 void doSelfTest();
+
+void setupI18n(QQmlApplicationEngine *engine);

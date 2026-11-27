@@ -20,4 +20,4 @@ serde_derive = "1.0.228"
 
 [build-dependencies]
 cxx-qt-build = "0.10.0"
-cmake-package = "0.1.10"
+cmake-package = "0.3.1"

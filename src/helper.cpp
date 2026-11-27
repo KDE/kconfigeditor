@@ -6,6 +6,9 @@
 #include <QCoreApplication>
 #include <QTimer>
 
+#include <KLocalizedQmlContext>
+#include <KLocalizedString>
+
 using namespace std::literals;
 
 // you might wonder what is going on here
@@ -22,4 +25,11 @@ QVariant readIntListEntryAsVariant(const QString &file, const QString &group, co
 void doSelfTest()
 {
     QTimer::singleShot(std::chrono::milliseconds(500), qApp, &QCoreApplication::quit);
+}
+
+void setupI18n(QQmlApplicationEngine *engine)
+{
+    KLocalizedString::setApplicationDomain("kconfigeditor");
+
+    KLocalization::setupLocalizedContext(engine);
 }

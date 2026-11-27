@@ -5,12 +5,13 @@ import QtQuick
 import QtQuick.Controls
 
 import org.kde.kirigami as Kirigami
+import org.kde.ki18n
 
 import org.kde.configeditor
 
 Kirigami.ScrollablePage {
 
-    title: "Apps"
+    title: KI18n.i18n("Apps")
 
     ListView {
         anchors.fill: parent

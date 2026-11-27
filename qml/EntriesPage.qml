@@ -6,13 +6,14 @@ import QtQuick.Layouts
 import QtQuick.Controls
 
 import org.kde.kirigami as Kirigami
+import org.kde.ki18n
 
 import org.kde.configeditor
 
 Kirigami.ScrollablePage {
     id: root
 
-    title: "Entries"
+    title: KI18n.i18n("Entries")
 
     required property string location
     required property string fileName
