@@ -13,6 +13,7 @@ mod util;
 
 use std::fs;
 
+use cxx_kde_frameworks::ki18n::i18n;
 use cxx_kde_frameworks::ki18n::KLocalizedString;
 use cxx_qt_lib::{
     CaseSensitivity, QByteArray, QGuiApplication, QQmlApplicationEngine, QString, QStringList, QUrl,
@@ -145,21 +146,24 @@ fn print_missing_keys(schemas: &Vec<Kcfg>) {
 }
 
 fn main() {
+    let mut app = QGuiApplication::new();
+
+    KLocalizedString::set_application_domain(&QByteArray::from("kconfigeditor"));
+
     let mut parser = QCommandLineParser::default();
-    let check_files_option = QCommandLineOption::from(&QString::from("check-files"));
+    let mut check_files_option = QCommandLineOption::from(&QString::from("check-files"));
+    check_files_option.set_description(&i18n("Check system kcfg files for completeness."));
     parser.add_option(&check_files_option);
-    let self_test_option = QCommandLineOption::from(&QString::from("self-test"));
+    let mut self_test_option = QCommandLineOption::from(&QString::from("self-test"));
+    self_test_option.set_description(&i18n("Internal, for testing."));
     parser.add_option(&self_test_option);
+    parser.add_help_option();
 
     // TODO put QGuiApplication::arguments() in cxx-qt
     let mut args = QStringList::default();
     for arg in std::env::args_os() {
         args.append(QString::from(arg.into_string().unwrap()));
     }
-
-    let mut app = QGuiApplication::new();
-
-    KLocalizedString::set_application_domain(&QByteArray::from("kconfigeditor"));
 
     parser.process(&args);
 
