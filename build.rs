@@ -29,6 +29,7 @@ fn main() {
             .qml_file("qml/FontDelegate.qml")
             .qml_file("qml/StringListDelegate.qml")
             .qml_file("qml/IntDelegate.qml")
+            .qml_file("qml/UIntDelegate.qml")
             .qml_file("qml/EnumDelegate.qml")
             .qml_file("qml/TodoDelegate.qml"),
     )

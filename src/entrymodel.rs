@@ -544,12 +544,30 @@ impl entrymodel::EntryModel {
                         return QVariant::from(&-2147483648);
                     }
 
+                    if entry.the_type == Type::UInt {
+                        if let Some(min) = &entry.min {
+                            let foo = min.0.parse::<u32>().unwrap();
+                            return QVariant::from(&foo);
+                        }
+
+                        return QVariant::from(&0);
+                    }
+
                     return QVariant::default();
                 }
                 EntryRoles::Max => {
                     if entry.the_type == Type::Int {
                         if let Some(max) = &entry.max {
                             let foo = max.0.parse::<i32>().unwrap();
+                            return QVariant::from(&foo);
+                        }
+
+                        return QVariant::from(&2147483647);
+                    }
+
+                    if entry.the_type == Type::UInt {
+                        if let Some(max) = &entry.max {
+                            let foo = max.0.parse::<u32>().unwrap();
                             return QVariant::from(&foo);
                         }
 

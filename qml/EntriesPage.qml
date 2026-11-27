@@ -64,7 +64,7 @@ Kirigami.ScrollablePage {
             DelegateChoice {
                 roleValue: EntryModel.UInt
 
-                TodoDelegate {}
+                UIntDelegate {}
             }
 
             DelegateChoice {
