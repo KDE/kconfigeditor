@@ -106,6 +106,14 @@ mod entrymodel {
         #[rust_name = "read_entry_rect"]
         fn readEntry(file: &QString, group: &QString, key: &QString, defaultValue: QRect) -> QRect;
 
+        #[rust_name = "read_entry_path"]
+        fn readPathEntry(
+            file: &QString,
+            group: &QString,
+            key: &QString,
+            defaultValue: &QString,
+        ) -> QString;
+
         #[rust_name = "read_entry_rectf"]
         fn readEntry(
             file: &QString,
@@ -403,7 +411,12 @@ impl entrymodel::EntryModel {
                         )),
                         Type::Enum => QVariant::default(),
                         Type::PathList => QVariant::default(),
-                        Type::Path => QVariant::default(),
+                        Type::Path => QVariant::from(&read_entry_path(
+                            &self.file_name,
+                            &self.group_name,
+                            &QString::from(key),
+                            &default_value.value_or_default(),
+                        )),
                         Type::Double => QVariant::from(&read_entry_double(
                             &self.file_name,
                             &self.group_name,

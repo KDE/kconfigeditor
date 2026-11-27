@@ -30,6 +30,8 @@ T readEntry(const QString &file, const QString &group, const QString &key, const
     return c.group(group).readEntry<T>(key, defaultValue);
 }
 
+QString readPathEntry(const QString &file, const QString &group, const QString &key, const QString &defaultValue);
+
 QVariant readIntListEntryAsVariant(const QString &file, const QString &group, const QString &key, const QString &defaultValueString);
 
 void doSelfTest();

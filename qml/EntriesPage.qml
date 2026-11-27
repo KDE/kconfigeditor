@@ -106,7 +106,7 @@ Kirigami.ScrollablePage {
             DelegateChoice {
                 roleValue: EntryModel.Path
 
-                StringDelegate {}
+                PathDelegate {}
             }
 
             DelegateChoice {

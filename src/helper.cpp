@@ -11,6 +11,12 @@
 
 using namespace std::literals;
 
+QString readPathEntry(const QString &file, const QString &group, const QString &key, const QString &defaultValue)
+{
+    KConfig c(file);
+    return c.group(group).readPathEntry(key, defaultValue);
+}
+
 // you might wonder what is going on here
 // at the time of writing cxx-qt didn't support putting a QList<int> into a QVariant, so we have to do this detour through C++
 // we receive the default value as string (because that's what we get from the kcfg file), but we need to interpret it as QList<int>. Then we read the entry and
