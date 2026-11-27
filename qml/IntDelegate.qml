@@ -18,8 +18,8 @@ BaseDelegate {
     innerItem: SpinBox {
         id: spinBox
 
-        from: intDelegate.min ?? -2147483648
-        to: intDelegate.max ?? 2147483647
+        from: intDelegate.min
+        to: intDelegate.max
         value: intDelegate.value
     }
 }
