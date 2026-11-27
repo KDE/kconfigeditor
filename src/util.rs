@@ -28,6 +28,11 @@ mod ffi {
 
         include!("cxx-qt-lib/qstring.h");
         type QString = cxx_qt_lib::QString;
+
+        include!("helper.h");
+        #[rust_name = "self_test"]
+        pub fn doSelfTest();
+
     }
 }
 
@@ -49,6 +54,7 @@ fn kcfg_dirs(location: &QString) -> QStringList {
 }
 
 use ffi::find_all_unique_files;
+pub use ffi::self_test;
 
 pub fn find_kcfg_files(location: &QString) -> QStringList {
     let mut patterns = QStringList::default();

@@ -30,3 +30,5 @@ T readEntry(const QString &file, const QString &group, const QString &key, const
 }
 
 QVariant readIntListEntryAsVariant(const QString &file, const QString &group, const QString &key, const QString &defaultValueString);
+
+void doSelfTest();

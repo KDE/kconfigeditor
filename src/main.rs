@@ -145,6 +145,8 @@ fn main() {
     let mut parser = QCommandLineParser::default();
     let check_files_option = QCommandLineOption::from(&QString::from("check-files"));
     parser.add_option(&check_files_option);
+    let self_test_option = QCommandLineOption::from(&QString::from("self-test"));
+    parser.add_option(&self_test_option);
 
     // TODO put QGuiApplication::arguments() in cxx-qt
     let mut args = QStringList::default();
@@ -178,6 +180,10 @@ fn main() {
 
         if let Some(engine) = engine.as_mut() {
             engine.load(&QUrl::from("qrc:/qt/qml/org/kde/configeditor/qml/main.qml"));
+        }
+
+        if parser.is_set(&QString::from("self-test")) {
+            util::self_test();
         }
 
         if let Some(app) = app.as_mut() {
