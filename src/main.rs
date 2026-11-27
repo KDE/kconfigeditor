@@ -145,6 +145,25 @@ fn print_missing_keys(schemas: &Vec<Kcfg>) {
     }
 }
 
+fn check_files() {
+    let kcfg_files = util::find_kcfg_files(&QString::default());
+
+    let config_schemas: Vec<_> = kcfg_files
+        .iter()
+        .flat_map(|file| config::parse(&file.to_string()))
+        .collect();
+
+    println!("The following files have no associated kcfg file:");
+
+    print_missing_files(&config_schemas);
+
+    println!();
+
+    println!("The following keys are unaccounted for:");
+
+    print_missing_keys(&config_schemas);
+}
+
 fn main() {
     let mut app = QGuiApplication::new();
 
@@ -168,39 +187,25 @@ fn main() {
     parser.process(&args);
 
     if parser.is_set(&QString::from("check-files")) {
-        let kcfg_files = util::find_kcfg_files(&QString::default());
+        check_files();
+        return;
+    }
 
-        let config_schemas: Vec<_> = kcfg_files
-            .iter()
-            .flat_map(|file| config::parse(&file.to_string()))
-            .collect();
+    let mut engine = QQmlApplicationEngine::new();
 
-        println!("The following files have no associated kcfg file:");
+    unsafe {
+        util::setup_i18n(engine.as_mut_ptr());
+    }
 
-        print_missing_files(&config_schemas);
+    if let Some(engine) = engine.as_mut() {
+        engine.load(&QUrl::from("qrc:/qt/qml/org/kde/configeditor/qml/main.qml"));
+    }
 
-        println!();
+    if parser.is_set(&QString::from("self-test")) {
+        util::self_test();
+    }
 
-        println!("The following keys are unaccounted for:");
-
-        print_missing_keys(&config_schemas);
-    } else {
-        let mut engine = QQmlApplicationEngine::new();
-
-        unsafe {
-            util::setup_i18n(engine.as_mut_ptr());
-        }
-
-        if let Some(engine) = engine.as_mut() {
-            engine.load(&QUrl::from("qrc:/qt/qml/org/kde/configeditor/qml/main.qml"));
-        }
-
-        if parser.is_set(&QString::from("self-test")) {
-            util::self_test();
-        }
-
-        if let Some(app) = app.as_mut() {
-            app.exec();
-        }
+    if let Some(app) = app.as_mut() {
+        app.exec();
     }
 }
