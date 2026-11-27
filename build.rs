@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Nicolas Fella <nicolas.fella@gmx.de>
 // SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 
+use std::env;
+
 use cmake_package::find_package;
 use cxx_qt_build::{CxxQtBuilder, QmlModule};
 
@@ -42,6 +44,15 @@ fn main() {
     .cpp_file("src/qstandardpaths.cpp")
     .cpp_file("src/kconfig.cpp")
     .cpp_file("src/kconfiggroup.cpp");
+
+    if env::var("KCONFIGEDITOR_ENABLE_ASAN").is_ok() {
+        unsafe {
+            builder = builder.cc_builder(|cc| {
+                cc.flag("-fsanitize=address");
+                println!("cargo::rustc-link-lib=asan")
+            });
+        }
+    }
 
     builder = link_libraries(builder);
 

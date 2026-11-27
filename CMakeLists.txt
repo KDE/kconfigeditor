@@ -20,6 +20,10 @@ find_package(KF6 REQUIRED COMPONENTS Kirigami Config)
 
 ecm_find_qmlmodule(org.kde.kquickcontrols)
 
+if ("address" IN_LIST ECM_ENABLE_SANITIZERS)
+    set(ENV{KCONFIGEDITOR_ENABLE_ASAN} 1)
+endif()
+
 corrosion_import_crate(MANIFEST_PATH Cargo.toml)
 
 corrosion_install(TARGETS configeditor ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
