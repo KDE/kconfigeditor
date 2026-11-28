@@ -32,7 +32,8 @@ fn main() {
             .qml_file("qml/UIntDelegate.qml")
             .qml_file("qml/EnumDelegate.qml")
             .qml_file("qml/TodoDelegate.qml")
-            .qml_file("qml/PathDelegate.qml"),
+            .qml_file("qml/PathDelegate.qml")
+            .depend("QtCore"),
     )
     .files([
         "src/appsmodel.rs",
